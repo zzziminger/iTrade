@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}iTrade - Professional Stock Trading Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Background Image -->
+<div class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-purple-900/80 to-black/95"></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 800\"><defs><linearGradient id=\"grad1\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:%23000B1E;stop-opacity:1\" /><stop offset=\"50%\" style=\"stop-color:%231A1B4B;stop-opacity:1\" /><stop offset=\"100%\" style=\"stop-color:%23000B1E;stop-opacity:1\" /></linearGradient></defs><rect width=\"100%\" height=\"100%\" fill=\"url(%23grad1)\"/><circle cx=\"200\" cy=\"150\" r=\"3\" fill=\"%23FF6B35\" opacity=\"0.8\"/><circle cx=\"400\" cy=\"200\" r=\"2\" fill=\"%234FACFE\" opacity=\"0.6\"/><circle cx=\"600\" cy=\"180\" r=\"4\" fill=\"%23F093FB\" opacity=\"0.7\"/><circle cx=\"800\" cy=\"220\" r=\"3\" fill=\"%2343E97B\" opacity=\"0.5\"/><circle cx=\"1000\" cy=\"160\" r=\"2\" fill=\"%23FF6B35\" opacity=\"0.8\"/><circle cx=\"300\" cy=\"400\" r=\"3\" fill=\"%234FACFE\" opacity=\"0.6\"/><circle cx=\"500\" cy=\"450\" r=\"2\" fill=\"%23F093FB\" opacity=\"0.7\"/><circle cx=\"700\" cy=\"380\" r=\"4\" fill=\"%2343E97B\" opacity=\"0.5\"/><circle cx=\"900\" cy=\"420\" r=\"3\" fill=\"%23FF6B35\" opacity=\"0.8\"/><circle cx=\"1100\" cy=\"360\" r=\"2\" fill=\"%234FACFE\" opacity=\"0.6\"/><circle cx=\"150\" cy=\"600\" r=\"3\" fill=\"%23F093FB\" opacity=\"0.7\"/><circle cx=\"350\" cy=\"650\" r=\"2\" fill=\"%2343E97B\" opacity=\"0.5\"/><circle cx=\"550\" cy=\"580\" r=\"4\" fill=\"%23FF6B35\" opacity=\"0.8\"/><circle cx=\"750\" cy=\"620\" r=\"3\" fill=\"%234FACFE\" opacity=\"0.6\"/><circle cx=\"950\" cy=\"560\" r=\"2\" fill=\"%23F093FB\" opacity=\"0.7\"/><circle cx=\"1150\" cy=\"600\" r=\"3\" fill=\"%2343E97B\" opacity=\"0.5\"/></svg>'); background-size: cover; background-position: center; opacity: 0.3;"></div>
+    </div>
+
+    <!-- Content Overlay -->
+    <div class="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        <!-- Logo and Title -->
+        <div class="mb-8">
+            <div class="w-24 h-24 gradient-bg rounded-3xl flex items-center justify-center mx-auto mb-6 pulse-glow">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-4">
+                <span class="gradient-text">iTrade</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                The future of professional stock trading with AI-powered insights and real-time market analysis
+            </p>
+        </div>
+
+        <!-- Feature Highlights -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="glass-effect rounded-2xl p-6 backdrop-blur-sm">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Real-Time Data</h3>
+                <p class="text-sm text-gray-300">Live market data and advanced charting tools</p>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-6 backdrop-blur-sm">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">AI Analysis</h3>
+                <p class="text-sm text-gray-300">Machine learning insights and predictions</p>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-6 backdrop-blur-sm">
+                <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Secure Trading</h3>
+                <p class="text-sm text-gray-300">Bank-level security and encryption</p>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            {% if current_user.is_authenticated %}
+                <a href="/dashboard" class="btn-primary text-lg px-8 py-4 text-xl">
+                    Go to Dashboard
+                </a>
+            {% else %}
+                <a href="/register" class="btn-primary text-lg px-8 py-4 text-xl">
+                    Get Started Free
+                </a>
+                <a href="/login" class="btn-secondary text-lg px-8 py-4 text-xl">
+                    Sign In
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+            <div class="animate-bounce">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="py-20 bg-gradient-to-b from-gray-900 to-black">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-white mb-4">
+                Advanced Trading Features
+            </h2>
+            <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                Experience the power of modern trading technology with our comprehensive suite of tools
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Market Data -->
+            <div class="card p-6 text-center group hover:scale-105 transition-transform duration-300">
+                <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Real-Time Charts</h3>
+                <p class="text-gray-600 dark:text-gray-400">Interactive charts with multiple timeframes and technical indicators</p>
+            </div>
+
+            <!-- AI Analysis -->
+            <div class="card p-6 text-center group hover:scale-105 transition-transform duration-300">
+                <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">AI Insights</h3>
+                <p class="text-gray-600 dark:text-gray-400">Machine learning analysis and market sentiment predictions</p>
+            </div>
+
+            <!-- Economic Data -->
+            <div class="card p-6 text-center group hover:scale-105 transition-transform duration-300">
+                <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Economic Data</h3>
+                <p class="text-gray-600 dark:text-gray-400">Federal Reserve data, CPI, interest rates, and more</p>
+            </div>
+
+            <!-- News Analysis -->
+            <div class="card p-6 text-center group hover:scale-105 transition-transform duration-300">
+                <div class="w-16 h-16 bg-gradient-to-r from-orange-400 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">News Analysis</h3>
+                <p class="text-gray-600 dark:text-gray-400">AI-powered news sentiment and market impact analysis</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="py-20 bg-gradient-to-r from-blue-900 via-purple-900 to-blue-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+            <div class="glass-effect rounded-2xl p-6">
+                <div class="text-3xl font-bold text-white mb-2">10K+</div>
+                <div class="text-gray-300">Active Traders</div>
+            </div>
+            <div class="glass-effect rounded-2xl p-6">
+                <div class="text-3xl font-bold text-white mb-2">$2.5B+</div>
+                <div class="text-gray-300">Trading Volume</div>
+            </div>
+            <div class="glass-effect rounded-2xl p-6">
+                <div class="text-3xl font-bold text-white mb-2">99.9%</div>
+                <div class="text-gray-300">Uptime</div>
+            </div>
+            <div class="glass-effect rounded-2xl p-6">
+                <div class="text-3xl font-bold text-white mb-2">24/7</div>
+                <div class="text-gray-300">Support</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Parallax effect for the hero section
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelector('.relative');
+        const speed = scrolled * 0.5;
+        parallax.style.transform = `translateY(${speed}px)`;
+    });
+
+    // Animate elements on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        observer.observe(card);
+    });
+});
+</script>
+{% endblock %} 
