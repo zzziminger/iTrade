@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 # Configure Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', '9d0be5a21203d14e3387ac86e8839496004b58a3bb2de86ea54f758fda38c31')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///itrade.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
