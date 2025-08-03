@@ -90,11 +90,27 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-white font-semibold">S&P 500</h3>
-                            <p class="text-2xl font-bold text-white">4,185.48</p>
-                            <p class="market-up">+35.67 (+0.85%)</p>
+                            <p class="text-2xl font-bold text-white">
+                                {% if market_data and '^GSPC' in market_data %}
+                                    {{ "{:,.2f}".format(market_data['^GSPC'].current) }}
+                                {% else %}
+                                    4,185.48
+                                {% endif %}
+                            </p>
+                            <p class="{% if market_data and '^GSPC' in market_data and market_data['^GSPC'].change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                {% if market_data and '^GSPC' in market_data %}
+                                    {% if market_data['^GSPC'].change >= 0 %}+{% endif %}{{ "{:.2f}".format(market_data['^GSPC'].change) }} ({{ "{:.2f}".format(market_data['^GSPC'].change_percent) }}%)
+                                {% else %}
+                                    +35.67 (+0.85%)
+                                {% endif %}
+                            </p>
                         </div>
                         <div class="text-4xl">
-                            <i class="fas fa-arrow-up text-green-400"></i>
+                            {% if market_data and '^GSPC' in market_data and market_data['^GSPC'].change >= 0 %}
+                                <i class="fas fa-arrow-up text-green-400"></i>
+                            {% else %}
+                                <i class="fas fa-arrow-down text-red-400"></i>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -104,11 +120,27 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-white font-semibold">Dow Jones</h3>
-                            <p class="text-2xl font-bold text-white">33,886.47</p>
-                            <p class="market-down">-40.56 (-0.12%)</p>
+                            <p class="text-2xl font-bold text-white">
+                                {% if market_data and '^DJI' in market_data %}
+                                    {{ "{:,.2f}".format(market_data['^DJI'].current) }}
+                                {% else %}
+                                    33,886.47
+                                {% endif %}
+                            </p>
+                            <p class="{% if market_data and '^DJI' in market_data and market_data['^DJI'].change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                {% if market_data and '^DJI' in market_data %}
+                                    {% if market_data['^DJI'].change >= 0 %}+{% endif %}{{ "{:.2f}".format(market_data['^DJI'].change) }} ({{ "{:.2f}".format(market_data['^DJI'].change_percent) }}%)
+                                {% else %}
+                                    -40.56 (-0.12%)
+                                {% endif %}
+                            </p>
                         </div>
                         <div class="text-4xl">
-                            <i class="fas fa-arrow-down text-red-400"></i>
+                            {% if market_data and '^DJI' in market_data and market_data['^DJI'].change >= 0 %}
+                                <i class="fas fa-arrow-up text-green-400"></i>
+                            {% else %}
+                                <i class="fas fa-arrow-down text-red-400"></i>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -118,11 +150,27 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-white font-semibold">NASDAQ</h3>
-                            <p class="text-2xl font-bold text-white">12,888.95</p>
-                            <p class="market-up">+156.34 (+1.23%)</p>
+                            <p class="text-2xl font-bold text-white">
+                                {% if market_data and '^IXIC' in market_data %}
+                                    {{ "{:,.2f}".format(market_data['^IXIC'].current) }}
+                                {% else %}
+                                    12,888.95
+                                {% endif %}
+                            </p>
+                            <p class="{% if market_data and '^IXIC' in market_data and market_data['^IXIC'].change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                {% if market_data and '^IXIC' in market_data %}
+                                    {% if market_data['^IXIC'].change >= 0 %}+{% endif %}{{ "{:.2f}".format(market_data['^IXIC'].change) }} ({{ "{:.2f}".format(market_data['^IXIC'].change_percent) }}%)
+                                {% else %}
+                                    +156.34 (+1.23%)
+                                {% endif %}
+                            </p>
                         </div>
                         <div class="text-4xl">
-                            <i class="fas fa-arrow-up text-green-400"></i>
+                            {% if market_data and '^IXIC' in market_data and market_data['^IXIC'].change >= 0 %}
+                                <i class="fas fa-arrow-up text-green-400"></i>
+                            {% else %}
+                                <i class="fas fa-arrow-down text-red-400"></i>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -132,11 +180,134 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-white font-semibold">VIX</h3>
-                            <p class="text-2xl font-bold text-white">18.45</p>
-                            <p class="vix-low">-2.15 (-10.45%)</p>
+                            <p class="text-2xl font-bold text-white">
+                                {% if market_data and '^VIX' in market_data %}
+                                    {{ "{:.2f}".format(market_data['^VIX'].current) }}
+                                {% else %}
+                                    18.45
+                                {% endif %}
+                            </p>
+                            <p class="{% if market_data and '^VIX' in market_data and market_data['^VIX'].change >= 0 %}vix-high{% else %}vix-low{% endif %}">
+                                {% if market_data and '^VIX' in market_data %}
+                                    {% if market_data['^VIX'].change >= 0 %}+{% endif %}{{ "{:.2f}".format(market_data['^VIX'].change) }} ({{ "{:.2f}".format(market_data['^VIX'].change_percent) }}%)
+                                {% else %}
+                                    -2.15 (-10.45%)
+                                {% endif %}
+                            </p>
                         </div>
                         <div class="text-4xl">
-                            <i class="fas fa-arrow-down text-green-400"></i>
+                            {% if market_data and '^VIX' in market_data and market_data['^VIX'].change >= 0 %}
+                                <i class="fas fa-arrow-up text-yellow-400"></i>
+                            {% else %}
+                                <i class="fas fa-arrow-down text-green-400"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commodities and Crypto -->
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <!-- Gold -->
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white font-semibold">Gold</h3>
+                            <p class="text-2xl font-bold text-white">
+                                {% if commodity_data and 'GC=F' in commodity_data %}
+                                    ${{ "{:.2f}".format(commodity_data['GC=F'].current) }}
+                                {% else %}
+                                    $2,150.75
+                                {% endif %}
+                            </p>
+                            <p class="{% if commodity_data and 'GC=F' in commodity_data and commodity_data['GC=F'].change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                {% if commodity_data and 'GC=F' in commodity_data %}
+                                    {% if commodity_data['GC=F'].change >= 0 %}+{% endif %}{{ "{:.2f}".format(commodity_data['GC=F'].change) }} ({{ "{:.2f}".format(commodity_data['GC=F'].change_percent) }}%)
+                                {% else %}
+                                    +12.50 (+0.58%)
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="text-4xl">
+                            <i class="fas fa-coins text-yellow-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Oil -->
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white font-semibold">Oil (WTI)</h3>
+                            <p class="text-2xl font-bold text-white">
+                                {% if commodity_data and 'CL=F' in commodity_data %}
+                                    ${{ "{:.2f}".format(commodity_data['CL=F'].current) }}
+                                {% else %}
+                                    $85.30
+                                {% endif %}
+                            </p>
+                            <p class="{% if commodity_data and 'CL=F' in commodity_data and commodity_data['CL=F'].change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                {% if commodity_data and 'CL=F' in commodity_data %}
+                                    {% if commodity_data['CL=F'].change >= 0 %}+{% endif %}{{ "{:.2f}".format(commodity_data['CL=F'].change) }} ({{ "{:.2f}".format(commodity_data['CL=F'].change_percent) }}%)
+                                {% else %}
+                                    -1.25 (-1.44%)
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="text-4xl">
+                            <i class="fas fa-oil-can text-black"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bitcoin -->
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white font-semibold">Bitcoin</h3>
+                            <p class="text-2xl font-bold text-white">
+                                {% if crypto_data and 'BTC-USD' in crypto_data %}
+                                    ${{ "{:,.0f}".format(crypto_data['BTC-USD'].current) }}
+                                {% else %}
+                                    $45,250
+                                {% endif %}
+                            </p>
+                            <p class="{% if crypto_data and 'BTC-USD' in crypto_data and crypto_data['BTC-USD'].change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                {% if crypto_data and 'BTC-USD' in crypto_data %}
+                                    {% if crypto_data['BTC-USD'].change >= 0 %}+{% endif %}{{ "{:.2f}".format(crypto_data['BTC-USD'].change) }} ({{ "{:.2f}".format(crypto_data['BTC-USD'].change_percent) }}%)
+                                {% else %}
+                                    +1,250 (+2.84%)
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="text-4xl">
+                            <i class="fab fa-bitcoin text-orange-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ethereum -->
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white font-semibold">Ethereum</h3>
+                            <p class="text-2xl font-bold text-white">
+                                {% if crypto_data and 'ETH-USD' in crypto_data %}
+                                    ${{ "{:,.0f}".format(crypto_data['ETH-USD'].current) }}
+                                {% else %}
+                                    $2,850
+                                {% endif %}
+                            </p>
+                            <p class="{% if crypto_data and 'ETH-USD' in crypto_data and crypto_data['ETH-USD'].change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                {% if crypto_data and 'ETH-USD' in crypto_data %}
+                                    {% if crypto_data['ETH-USD'].change >= 0 %}+{% endif %}{{ "{:.2f}".format(crypto_data['ETH-USD'].change) }} ({{ "{:.2f}".format(crypto_data['ETH-USD'].change_percent) }}%)
+                                {% else %}
+                                    +45.50 (+1.62%)
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="text-4xl">
+                            <i class="fab fa-ethereum text-purple-400"></i>
                         </div>
                     </div>
                 </div>

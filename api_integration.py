@@ -1,6 +1,7 @@
 """
 Real API Integration for iTrade
 Includes: Yahoo Finance, Alpha Vantage, FRED, News API, and OpenAI
+Enhanced with: Gold, Oil, VIX, and Major Indices
 """
 
 import requests
@@ -85,37 +86,166 @@ class StockAPI:
             return []
     
     def get_market_data(self):
-        """Get major market indices"""
-        indices = ['^GSPC', '^DJI', '^IXIC', '^VIX']  # S&P 500, Dow, NASDAQ, VIX
+        """Get major market indices and commodities"""
+        # Major indices and commodities
+        symbols = {
+            '^GSPC': 'S&P 500',
+            '^DJI': 'Dow Jones',
+            '^IXIC': 'NASDAQ',
+            '^VIX': 'VIX',
+            'GC=F': 'Gold',
+            'CL=F': 'Oil (WTI)',
+            '^TNX': '10-Year Treasury',
+            'DX-Y.NYB': 'US Dollar Index',
+            'BTC-USD': 'Bitcoin',
+            'ETH-USD': 'Ethereum'
+        }
+        
         market_data = {}
         
-        for index in indices:
+        for symbol, name in symbols.items():
             try:
-                ticker = yf.Ticker(index)
-                info = ticker.info
+                ticker = yf.Ticker(symbol)
                 hist = ticker.history(period="2d")
                 
                 if len(hist) >= 2:
                     current = hist['Close'].iloc[-1]
                     previous = hist['Close'].iloc[-2]
                     change = current - previous
-                    change_percent = (change / previous) * 100
+                    change_percent = (change / previous) * 100 if previous else 0
+                    
+                    market_data[symbol] = {
+                        'name': name,
+                        'current': current,
+                        'previous': previous,
+                        'change': change,
+                        'change_percent': change_percent,
+                        'symbol': symbol
+                    }
                 else:
+                    # Fallback to info if history is not available
+                    info = ticker.info
                     current = info.get('currentPrice', 0)
                     previous = info.get('previousClose', current)
                     change = current - previous
                     change_percent = (change / previous) * 100 if previous else 0
-                
-                market_data[index] = {
-                    'name': info.get('longName', index),
-                    'current': current,
-                    'change': change,
-                    'change_percent': change_percent
-                }
+                    
+                    market_data[symbol] = {
+                        'name': name,
+                        'current': current,
+                        'previous': previous,
+                        'change': change,
+                        'change_percent': change_percent,
+                        'symbol': symbol
+                    }
+                    
             except Exception as e:
-                print(f"Error getting market data for {index}: {e}")
+                print(f"Error getting market data for {symbol}: {e}")
+                # Provide fallback data
+                market_data[symbol] = {
+                    'name': name,
+                    'current': 0,
+                    'previous': 0,
+                    'change': 0,
+                    'change_percent': 0,
+                    'symbol': symbol
+                }
         
         return market_data
+    
+    def get_commodity_data(self):
+        """Get commodity prices (Gold, Oil, etc.)"""
+        commodities = {
+            'GC=F': 'Gold',
+            'SI=F': 'Silver',
+            'CL=F': 'Oil (WTI)',
+            'BZ=F': 'Oil (Brent)',
+            'NG=F': 'Natural Gas',
+            'ZC=F': 'Corn',
+            'ZS=F': 'Soybeans',
+            'KC=F': 'Coffee'
+        }
+        
+        commodity_data = {}
+        
+        for symbol, name in commodities.items():
+            try:
+                ticker = yf.Ticker(symbol)
+                hist = ticker.history(period="2d")
+                
+                if len(hist) >= 2:
+                    current = hist['Close'].iloc[-1]
+                    previous = hist['Close'].iloc[-2]
+                    change = current - previous
+                    change_percent = (change / previous) * 100 if previous else 0
+                    
+                    commodity_data[symbol] = {
+                        'name': name,
+                        'current': current,
+                        'previous': previous,
+                        'change': change,
+                        'change_percent': change_percent,
+                        'symbol': symbol
+                    }
+                    
+            except Exception as e:
+                print(f"Error getting commodity data for {symbol}: {e}")
+                commodity_data[symbol] = {
+                    'name': name,
+                    'current': 0,
+                    'previous': 0,
+                    'change': 0,
+                    'change_percent': 0,
+                    'symbol': symbol
+                }
+        
+        return commodity_data
+    
+    def get_crypto_data(self):
+        """Get cryptocurrency prices"""
+        cryptos = {
+            'BTC-USD': 'Bitcoin',
+            'ETH-USD': 'Ethereum',
+            'USDT-USD': 'Tether',
+            'BNB-USD': 'Binance Coin',
+            'ADA-USD': 'Cardano',
+            'SOL-USD': 'Solana'
+        }
+        
+        crypto_data = {}
+        
+        for symbol, name in cryptos.items():
+            try:
+                ticker = yf.Ticker(symbol)
+                hist = ticker.history(period="2d")
+                
+                if len(hist) >= 2:
+                    current = hist['Close'].iloc[-1]
+                    previous = hist['Close'].iloc[-2]
+                    change = current - previous
+                    change_percent = (change / previous) * 100 if previous else 0
+                    
+                    crypto_data[symbol] = {
+                        'name': name,
+                        'current': current,
+                        'previous': previous,
+                        'change': change,
+                        'change_percent': change_percent,
+                        'symbol': symbol
+                    }
+                    
+            except Exception as e:
+                print(f"Error getting crypto data for {symbol}: {e}")
+                crypto_data[symbol] = {
+                    'name': name,
+                    'current': 0,
+                    'previous': 0,
+                    'change': 0,
+                    'change_percent': 0,
+                    'symbol': symbol
+                }
+        
+        return crypto_data
 
 class EconomicAPI:
     """Federal Reserve Economic Data (FRED) integration"""

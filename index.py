@@ -246,7 +246,7 @@ def logout():
 @login_required
 def dashboard():
     # Get real stock data
-    stocks = ['AAPL', 'GOOGL', 'MSFT', 'TSLA']
+    stocks = ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'NVDA', 'AMZN']
     stock_data = []
     
     for symbol in stocks:
@@ -260,8 +260,26 @@ def dashboard():
     # Get real news
     news_data = get_news_data()
     
-    # Get real market data
-    market_data = get_market_data()
+    # Get comprehensive market data including indices, commodities, and crypto
+    try:
+        from api_integration import StockAPI
+        stock_api = StockAPI()
+        
+        # Get major indices and commodities
+        market_data = stock_api.get_market_data()
+        
+        # Get commodity data (Gold, Oil, etc.)
+        commodity_data = stock_api.get_commodity_data()
+        
+        # Get crypto data
+        crypto_data = stock_api.get_crypto_data()
+        
+    except Exception as e:
+        logger.error(f"Error getting comprehensive market data: {e}")
+        # Fallback to basic market data
+        market_data = get_market_data()
+        commodity_data = {}
+        crypto_data = {}
     
     # Analyze sentiment
     sentiment = analyze_market_sentiment(news_data)
@@ -271,6 +289,8 @@ def dashboard():
                          economic_data=economic_data,
                          news=news_data,
                          market_data=market_data,
+                         commodity_data=commodity_data,
+                         crypto_data=crypto_data,
                          sentiment=sentiment)
 
 @app.route('/stock/<symbol>')
@@ -331,8 +351,47 @@ def api_news():
 
 @app.route('/api/market')
 def api_market_data():
-    data = get_market_data()
-    return jsonify(data)
+    """Get comprehensive market data including indices, commodities, and crypto"""
+    try:
+        from api_integration import StockAPI
+        stock_api = StockAPI()
+        
+        market_data = stock_api.get_market_data()
+        commodity_data = stock_api.get_commodity_data()
+        crypto_data = stock_api.get_crypto_data()
+        
+        return jsonify({
+            'indices': market_data,
+            'commodities': commodity_data,
+            'crypto': crypto_data
+        })
+    except Exception as e:
+        logger.error(f"Error getting market data: {e}")
+        return jsonify({'error': 'Market data unavailable'}), 500
+
+@app.route('/api/commodities')
+def api_commodity_data():
+    """Get commodity prices (Gold, Oil, etc.)"""
+    try:
+        from api_integration import StockAPI
+        stock_api = StockAPI()
+        data = stock_api.get_commodity_data()
+        return jsonify(data)
+    except Exception as e:
+        logger.error(f"Error getting commodity data: {e}")
+        return jsonify({'error': 'Commodity data unavailable'}), 500
+
+@app.route('/api/crypto')
+def api_crypto_data():
+    """Get cryptocurrency prices"""
+    try:
+        from api_integration import StockAPI
+        stock_api = StockAPI()
+        data = stock_api.get_crypto_data()
+        return jsonify(data)
+    except Exception as e:
+        logger.error(f"Error getting crypto data: {e}")
+        return jsonify({'error': 'Crypto data unavailable'}), 500
 
 @app.route('/api/sentiment')
 def api_sentiment():
