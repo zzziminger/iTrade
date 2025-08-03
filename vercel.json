@@ -2,18 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "iTrade_minimal.py",
+      "src": "app_simple.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "iTrade_minimal.py"
+      "dest": "app_simple.py"
     }
   ],
   "env": {
     "FLASK_ENV": "production",
-    "FLASK_APP": "iTrade_minimal.py"
+    "FLASK_APP": "app_simple.py"
   }
 } 
