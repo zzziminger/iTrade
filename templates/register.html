@@ -1,188 +1,312 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - iTrade</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .slide-in {
+            animation: slideIn 0.8s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .input-focus {
+            transition: all 0.3s ease;
+        }
+        .input-focus:focus {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        .password-strength {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center px-4">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-20 left-20 w-32 h-32 bg-blue-400 rounded-full opacity-20 floating"></div>
+        <div class="absolute top-40 right-20 w-24 h-24 bg-purple-400 rounded-full opacity-20 floating" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-20 left-1/4 w-16 h-16 bg-pink-400 rounded-full opacity-20 floating" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-40 right-1/4 w-20 h-20 bg-yellow-400 rounded-full opacity-20 floating" style="animation-delay: 3s;"></div>
+    </div>
 
-{% block title %}Register - iTrade{% endblock %}
-
-{% block public_content %}
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <div class="text-center">
-            <h1 class="text-3xl font-bold gradient-text">iTrade</h1>
-            <h2 class="mt-6 text-2xl font-bold text-gray-900 dark:text-gray-100">
-                Create your account
-            </h2>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Join iTrade and start your trading journey
-            </p>
-        </div>
-
-        <div class="card p-8">
-            <form class="space-y-6" method="POST">
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div>
-                        <label for="first_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            First Name
-                        </label>
-                        <input
-                            id="first_name"
-                            name="first_name"
-                            type="text"
-                            required
-                            class="input"
-                            placeholder="Enter your first name"
-                        >
-                    </div>
-
-                    <div>
-                        <label for="last_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Last Name
-                        </label>
-                        <input
-                            id="last_name"
-                            name="last_name"
-                            type="text"
-                            required
-                            class="input"
-                            placeholder="Enter your last name"
-                        >
-                    </div>
+    <!-- Registration Form -->
+    <div class="relative z-10 w-full max-w-md">
+        <div class="glass rounded-2xl p-8 slide-in">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-plus text-2xl text-white"></i>
                 </div>
+                <h1 class="text-3xl font-bold text-white mb-2">Join iTrade</h1>
+                <p class="text-blue-100">Create your account and start trading</p>
+            </div>
 
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="bg-red-500 bg-opacity-20 border border-red-400 text-red-200 px-4 py-3 rounded-lg mb-6">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Registration Form -->
+            <form method="POST" class="space-y-6" id="registerForm">
                 <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Username
+                    <label for="username" class="block text-white font-medium mb-2">
+                        <i class="fas fa-user mr-2"></i>Username
                     </label>
-                    <input
-                        id="username"
-                        name="username"
-                        type="text"
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
                         required
-                        class="input"
+                        class="w-full px-4 py-3 bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg text-white placeholder-blue-200 input-focus focus:outline-none focus:border-blue-400"
                         placeholder="Choose a username"
+                        minlength="3"
                     >
+                    <p class="text-blue-200 text-xs mt-1">Username must be at least 3 characters</p>
                 </div>
 
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Email address
+                    <label for="email" class="block text-white font-medium mb-2">
+                        <i class="fas fa-envelope mr-2"></i>Email
                     </label>
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
                         required
-                        class="input"
+                        class="w-full px-4 py-3 bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg text-white placeholder-blue-200 input-focus focus:outline-none focus:border-blue-400"
                         placeholder="Enter your email"
                     >
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Password
+                    <label for="password" class="block text-white font-medium mb-2">
+                        <i class="fas fa-lock mr-2"></i>Password
                     </label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
                         required
-                        class="input"
-                        placeholder="Create a password"
-                        minlength="6"
+                        class="w-full px-4 py-3 bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg text-white placeholder-blue-200 input-focus focus:outline-none focus:border-blue-400"
+                        placeholder="Create a strong password"
+                        minlength="8"
                     >
+                    <div class="mt-2">
+                        <div class="flex space-x-1">
+                            <div class="flex-1 h-2 bg-gray-600 rounded-full overflow-hidden">
+                                <div id="strength-bar" class="h-full bg-red-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <p id="strength-text" class="text-blue-200 text-xs mt-1">Password strength: <span id="strength-label">Weak</span></p>
+                    </div>
                 </div>
 
                 <div>
-                    <label for="confirm_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Confirm Password
+                    <label for="confirm-password" class="block text-white font-medium mb-2">
+                        <i class="fas fa-lock mr-2"></i>Confirm Password
                     </label>
-                    <input
-                        id="confirm_password"
-                        name="confirm_password"
-                        type="password"
+                    <input 
+                        type="password" 
+                        id="confirm-password" 
+                        name="confirm-password" 
                         required
-                        class="input"
+                        class="w-full px-4 py-3 bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg text-white placeholder-blue-200 input-focus focus:outline-none focus:border-blue-400"
                         placeholder="Confirm your password"
-                        minlength="6"
                     >
+                    <p id="password-match" class="text-blue-200 text-xs mt-1"></p>
                 </div>
 
                 <div class="flex items-center">
-                    <input
-                        id="terms"
-                        name="terms"
-                        type="checkbox"
-                        required
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    >
-                    <label for="terms" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-                        I agree to the
-                        <a href="#" class="text-blue-600 hover:text-blue-500 dark:text-blue-400">Terms of Service</a>
-                        and
-                        <a href="#" class="text-blue-600 hover:text-blue-500 dark:text-blue-400">Privacy Policy</a>
+                    <input type="checkbox" id="terms" required class="rounded border-white border-opacity-20 text-blue-600 focus:ring-blue-500">
+                    <label for="terms" class="ml-2 text-blue-100 text-sm">
+                        I agree to the 
+                        <a href="#" class="text-white hover:text-blue-200 transition-colors">Terms of Service</a>
+                        and 
+                        <a href="#" class="text-white hover:text-blue-200 transition-colors">Privacy Policy</a>
                     </label>
                 </div>
 
-                <div>
-                    <button
-                        type="submit"
-                        class="btn-primary w-full flex justify-center"
-                    >
-                        Create Account
-                    </button>
-                </div>
+                <button 
+                    type="submit"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-transparent"
+                >
+                    <i class="fas fa-user-plus mr-2"></i>Create Account
+                </button>
             </form>
 
-            <div class="mt-6">
-                <div class="relative">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
-                    </div>
-                    <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                            Already have an account?
-                        </span>
-                    </div>
-                </div>
+            <!-- Divider -->
+            <div class="my-6 flex items-center">
+                <div class="flex-1 border-t border-white border-opacity-20"></div>
+                <span class="px-4 text-blue-100 text-sm">or</span>
+                <div class="flex-1 border-t border-white border-opacity-20"></div>
+            </div>
 
-                <div class="mt-6">
-                    <a
-                        href="/login"
-                        class="btn-secondary w-full flex justify-center"
-                    >
-                        Sign in to your account
+            <!-- Social Registration -->
+            <div class="space-y-3">
+                <button class="w-full bg-white bg-opacity-10 hover:bg-opacity-20 text-white font-medium py-3 px-4 rounded-lg transition-all transform hover:scale-105 border border-white border-opacity-20">
+                    <i class="fab fa-google mr-2"></i>Sign up with Google
+                </button>
+                <button class="w-full bg-white bg-opacity-10 hover:bg-opacity-20 text-white font-medium py-3 px-4 rounded-lg transition-all transform hover:scale-105 border border-white border-opacity-20">
+                    <i class="fab fa-apple mr-2"></i>Sign up with Apple
+                </button>
+            </div>
+
+            <!-- Sign In Link -->
+            <div class="text-center mt-6">
+                <p class="text-blue-100">
+                    Already have an account? 
+                    <a href="/login" class="text-white hover:text-blue-200 font-semibold transition-colors">
+                        Sign in
                     </a>
-                </div>
+                </p>
             </div>
         </div>
 
-        <div class="text-center">
-            <p class="text-xs text-gray-500 dark:text-gray-400">
-                By creating an account, you agree to our
-                <a href="#" class="text-blue-600 hover:text-blue-500 dark:text-blue-400">Terms of Service</a>
-                and
-                <a href="#" class="text-blue-600 hover:text-blue-500 dark:text-blue-400">Privacy Policy</a>
+        <!-- Footer -->
+        <div class="text-center mt-8">
+            <p class="text-blue-100 text-sm">
+                By creating an account, you agree to our 
+                <a href="#" class="text-white hover:text-blue-200 transition-colors">Terms of Service</a>
+                and 
+                <a href="#" class="text-white hover:text-blue-200 transition-colors">Privacy Policy</a>
             </p>
         </div>
     </div>
-</div>
 
-<script>
-// Password confirmation validation
-document.getElementById('confirm_password').addEventListener('input', function() {
-    const password = document.getElementById('password').value;
-    const confirmPassword = this.value;
-    
-    if (password !== confirmPassword) {
-        this.setCustomValidity('Passwords do not match');
-    } else {
-        this.setCustomValidity('');
-    }
-});
+    <script>
+        // Password strength checker
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const strengthBar = document.getElementById('strength-bar');
+        const strengthLabel = document.getElementById('strength-label');
+        const passwordMatch = document.getElementById('password-match');
 
-document.getElementById('password').addEventListener('input', function() {
-    const confirmPassword = document.getElementById('confirm_password');
-    if (confirmPassword.value) {
-        confirmPassword.dispatchEvent(new Event('input'));
-    }
-});
-</script>
-{% endblock %} 
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            let label = 'Weak';
+            let color = 'bg-red-500';
+
+            // Check length
+            if (password.length >= 8) strength += 1;
+            if (password.length >= 12) strength += 1;
+
+            // Check for different character types
+            if (/[a-z]/.test(password)) strength += 1;
+            if (/[A-Z]/.test(password)) strength += 1;
+            if (/[0-9]/.test(password)) strength += 1;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+            // Update strength bar
+            const percentage = (strength / 6) * 100;
+            strengthBar.style.width = percentage + '%';
+
+            // Update label and color
+            if (strength <= 2) {
+                label = 'Weak';
+                color = 'bg-red-500';
+            } else if (strength <= 4) {
+                label = 'Fair';
+                color = 'bg-yellow-500';
+            } else if (strength <= 5) {
+                label = 'Good';
+                color = 'bg-blue-500';
+            } else {
+                label = 'Strong';
+                color = 'bg-green-500';
+            }
+
+            strengthBar.className = `h-full ${color} rounded-full transition-all duration-300`;
+            strengthLabel.textContent = label;
+        });
+
+        // Password confirmation checker
+        confirmPasswordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            const confirmPassword = this.value;
+
+            if (confirmPassword === '') {
+                passwordMatch.textContent = '';
+                passwordMatch.className = 'text-blue-200 text-xs mt-1';
+            } else if (password === confirmPassword) {
+                passwordMatch.textContent = '✓ Passwords match';
+                passwordMatch.className = 'text-green-400 text-xs mt-1';
+            } else {
+                passwordMatch.textContent = '✗ Passwords do not match';
+                passwordMatch.className = 'text-red-400 text-xs mt-1';
+            }
+        });
+
+        // Form validation
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                return;
+            }
+
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long!');
+                return;
+            }
+
+            // Show loading state
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+            button.disabled = true;
+        });
+
+        // Add focus effects to inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('scale-105');
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('scale-105');
+            });
+        });
+
+        // Add hover effects to buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html> 
