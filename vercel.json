@@ -2,23 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "app.py",
+      "src": "app_vercel.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app.py"
+      "dest": "app_vercel.py"
     }
   ],
   "env": {
     "FLASK_ENV": "production",
-    "FLASK_APP": "app.py"
-  },
-  "functions": {
-    "app.py": {
-      "maxDuration": 30
-    }
+    "FLASK_APP": "app_vercel.py"
   }
 } 
