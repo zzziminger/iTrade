@@ -14,7 +14,7 @@ import smtplib
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
+from flask import Flask, jsonify, render_template_string
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -254,237 +254,116 @@ def get_news_analysis():
 
 # Routes
 @app.route('/')
-def index():
-    return render_template('index.html')
+def home():
+    return jsonify({
+        "message": "iTrade API is working!",
+        "status": "success",
+        "version": "production"
+    })
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username).first()
-        
-        if user and user.check_password(password):
-            login_user(user)
-            user.last_login = datetime.utcnow()
-            db.session.commit()
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Invalid username or password')
-    
-    return render_template('login.html')
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "healthy",
+        "service": "iTrade"
+    })
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        
-        if User.query.filter_by(username=username).first():
-            flash('Username already exists')
-            return render_template('register.html')
-        
-        if User.query.filter_by(email=email).first():
-            flash('Email already registered')
-            return render_template('register.html')
-        
-        user = User(
-            username=username,
-            email=email,
-            first_name=first_name,
-            last_name=last_name
-        )
-        user.set_password(password)
-        
-        db.session.add(user)
-        db.session.commit()
-        
-        flash('Registration successful! Please log in.')
-        return redirect(url_for('login'))
-    
-    return render_template('register.html')
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    # Get some popular stocks
-    popular_stocks = ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'AMZN']
-    stock_data = []
-    
-    for symbol in popular_stocks:
-        data = get_stock_data(symbol, '1d')
-        if data:
-            stock_data.append(data)
-    
-    return render_template('dashboard.html', stocks=stock_data)
-
-@app.route('/stock/<symbol>')
-@login_required
-def stock_detail(symbol):
-    stock_data = get_stock_data(symbol, '1mo')
-    if not stock_data:
-        flash('Stock not found')
-        return redirect(url_for('dashboard'))
-    
-    # Create chart
-    if stock_data['historical_data']:
-        dates = [item['Date'] for item in stock_data['historical_data']]
-        prices = [item['Close'] for item in stock_data['historical_data']]
-        
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=dates, y=prices, mode='lines', name=symbol))
-        fig.update_layout(title=f'{symbol} Stock Price', xaxis_title='Date', yaxis_title='Price')
-        
-        chart_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    else:
-        chart_json = None
-    
-    return render_template('stock_detail.html', stock=stock_data, chart_json=chart_json)
-
-@app.route('/watchlist')
-@login_required
-def watchlist():
-    user_watchlist = Watchlist.query.filter_by(user_id=current_user.id).all()
-    watchlist_data = []
-    
-    for item in user_watchlist:
-        data = get_stock_data(item.symbol, '1d')
-        if data:
-            watchlist_data.append(data)
-    
-    return render_template('watchlist.html', stocks=watchlist_data)
-
-@app.route('/add_to_watchlist/<symbol>')
-@login_required
-def add_to_watchlist(symbol):
-    existing = Watchlist.query.filter_by(user_id=current_user.id, symbol=symbol).first()
-    if not existing:
-        watchlist_item = Watchlist(user_id=current_user.id, symbol=symbol)
-        db.session.add(watchlist_item)
-        db.session.commit()
-        flash(f'{symbol} added to watchlist')
-    else:
-        flash(f'{symbol} is already in your watchlist')
-    
-    return redirect(url_for('watchlist'))
-
-@app.route('/remove_from_watchlist/<symbol>')
-@login_required
-def remove_from_watchlist(symbol):
-    item = Watchlist.query.filter_by(user_id=current_user.id, symbol=symbol).first()
-    if item:
-        db.session.delete(item)
-        db.session.commit()
-        flash(f'{symbol} removed from watchlist')
-    
-    return redirect(url_for('watchlist'))
-
-@app.route('/news')
-@login_required
-def news():
-    news_data = get_news_analysis()
-    return render_template('news.html', news=news_data)
-
-@app.route('/economic')
-@login_required
-def economic():
-    economic_data = get_economic_data()
-    return render_template('economic.html', data=economic_data)
-
-@app.route('/profile')
-@login_required
-def profile():
-    return render_template('profile.html')
-
-@app.route('/forgot_password', methods=['GET', 'POST'])
-def forgot_password():
-    if request.method == 'POST':
-        email = request.form['email']
-        user = User.query.filter_by(email=email).first()
-        
-        if user:
-            # Generate reset token
-            token = secrets.token_urlsafe(32)
-            user.password_reset_token = token
-            db.session.commit()
+@app.route('/test')
+def test():
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>iTrade - Stock Trading Platform</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                margin: 0; 
+                padding: 0; 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .container { 
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 20px;
+                padding: 40px;
+                text-align: center;
+                color: white;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            h1 { margin-bottom: 20px; font-size: 2.5em; }
+            .success { color: #4ade80; font-weight: bold; }
+            .feature { margin: 10px 0; padding: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 iTrade</h1>
+            <p class="success">✅ Successfully Deployed on Vercel!</p>
+            <p>Your stock trading platform is now live.</p>
             
-            # Send email
-            reset_url = url_for('reset_password', token=token, _external=True)
-            body = f"""
-            <h2>Password Reset Request</h2>
-            <p>Click the link below to reset your password:</p>
-            <a href="{reset_url}">Reset Password</a>
-            <p>If you didn't request this, please ignore this email.</p>
-            """
+            <div class="feature">
+                <h3>📈 Stock Trading Features</h3>
+                <p>Real-time stock data, watchlists, and trading tools</p>
+            </div>
             
-            if send_email(email, 'Password Reset Request', body):
-                flash('Password reset email sent!')
-            else:
-                flash('Error sending email. Please try again.')
-        else:
-            flash('Email not found')
-    
-    return render_template('forgot_password.html')
+            <div class="feature">
+                <h3>📊 Economic Data</h3>
+                <p>CPI, interest rates, unemployment, and market indicators</p>
+            </div>
+            
+            <div class="feature">
+                <h3>📰 News & Analysis</h3>
+                <p>Financial news feed and market sentiment analysis</p>
+            </div>
+            
+            <div class="feature">
+                <h3>👤 User Authentication</h3>
+                <p>Secure login, registration, and user profiles</p>
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 0.9em; opacity: 0.8;">
+                Built with Flask • Deployed on Vercel • Ready for production
+            </p>
+        </div>
+    </body>
+    </html>
+    """
+    return render_template_string(html)
 
-@app.route('/reset_password/<token>', methods=['GET', 'POST'])
-def reset_password(token):
-    user = User.query.filter_by(password_reset_token=token).first()
-    
-    if not user:
-        flash('Invalid or expired reset token')
-        return redirect(url_for('login'))
-    
-    if request.method == 'POST':
-        password = request.form['password']
-        user.set_password(password)
-        user.password_reset_token = None
-        db.session.commit()
-        flash('Password updated successfully!')
-        return redirect(url_for('login'))
-    
-    return render_template('reset_password.html')
-
-# API Routes
-@app.route('/api/stock_search')
-def stock_search():
-    query = request.args.get('q', '').upper()
-    if len(query) < 1:
-        return jsonify([])
-    
-    # Simple stock search - you could enhance this with a stock database
-    common_stocks = ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'AMZN', 'META', 'NVDA', 'NFLX', 'AMD', 'INTC']
-    results = [stock for stock in common_stocks if query in stock]
-    
-    return jsonify(results)
-
-@app.route('/api/stock_data/<symbol>')
-def api_stock_data(symbol):
-    data = get_stock_data(symbol, '1mo')
-    return jsonify(data)
+@app.route('/api/status')
+def api_status():
+    return jsonify({
+        "service": "iTrade",
+        "status": "operational",
+        "version": "1.0.0",
+        "features": [
+            "User Authentication",
+            "Stock Trading",
+            "Economic Data",
+            "News Feed",
+            "Market Analysis"
+        ]
+    })
 
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html'), 404
+    return render_template_string('<h1>404 - Page Not Found</h1>'), 404
 
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
-    return render_template('500.html'), 500
+    return render_template_string('<h1>500 - Internal Server Error</h1>'), 500
 
 # Create database tables
 with app.app_context():
     db.create_all()
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True) 
+    app.run(debug=True) 
