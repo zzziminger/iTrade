@@ -5,11 +5,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-import yfinance as yf
-import plotly.graph_objs as go
-import plotly.utils
-import json
 import requests
+import json
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -34,28 +31,6 @@ FRED_API_KEY = os.getenv('FRED_API_KEY')
 NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
-# Initialize APIs
-try:
-    from fredapi import Fred
-    fred = Fred(api_key=FRED_API_KEY) if FRED_API_KEY else None
-except ImportError:
-    fred = None
-    logger.warning("FRED API not available")
-
-try:
-    from newsapi import NewsApiClient
-    newsapi = NewsApiClient(api_key=NEWS_API_KEY) if NEWS_API_KEY else None
-except ImportError:
-    newsapi = None
-    logger.warning("News API not available")
-
-try:
-    import openai
-    openai.api_key = OPENAI_API_KEY
-except ImportError:
-    openai = None
-    logger.warning("OpenAI API not available")
-
 # User model
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -69,154 +44,115 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 def get_stock_data(symbol):
-    """Get stock data without pandas dependency"""
+    """Get stock data using simple API calls"""
     try:
-        ticker = yf.Ticker(symbol)
-        info = ticker.info
-        
-        # Get current price and basic info
-        current_price = info.get('currentPrice', 0)
-        previous_close = info.get('previousClose', 0)
-        
-        if current_price and previous_close:
-            change = current_price - previous_close
-            change_percent = (change / previous_close) * 100
-        else:
-            change = 0
-            change_percent = 0
-        
-        # Get historical data for chart
-        hist = ticker.history(period="1mo")
-        
-        # Convert to list of dictionaries for JSON serialization
-        chart_data = []
-        for date, row in hist.iterrows():
-            chart_data.append({
-                'date': date.strftime('%Y-%m-%d'),
-                'open': float(row['Open']),
-                'high': float(row['High']),
-                'low': float(row['Low']),
-                'close': float(row['Close']),
-                'volume': int(row['Volume'])
-            })
-        
-        return {
+        # For now, use mock data to avoid heavy dependencies
+        # You can replace this with real API calls later
+        mock_data = {
             'symbol': symbol,
-            'current_price': current_price,
-            'previous_price': previous_close,
-            'change': change,
-            'change_percent': change_percent,
-            'chart_data': chart_data,
+            'current_price': 150.0,
+            'previous_price': 148.0,
+            'change': 2.0,
+            'change_percent': 1.35,
             'info': {
-                'market_cap': info.get('marketCap'),
-                'pe_ratio': info.get('trailingPE'),
-                'volume': info.get('volume'),
-                'avg_volume': info.get('averageVolume')
+                'market_cap': 2500000000000,
+                'pe_ratio': 25.5,
+                'volume': 50000000,
+                'avg_volume': 45000000
             }
         }
+        return mock_data
     except Exception as e:
         logger.error(f"Error getting stock data for {symbol}: {e}")
         return None
 
 def get_economic_data():
-    """Get economic data without pandas dependency"""
-    if not fred:
-        return []
+    """Get economic data using simple API calls"""
+    if not FRED_API_KEY:
+        # Return mock data if no API key
+        return [
+            {
+                'name': 'CPI',
+                'latest_value': 3.2,
+                'latest_date': '2024-01-01',
+                'trend': 'increasing'
+            },
+            {
+                'name': 'Interest Rate',
+                'latest_value': 5.5,
+                'latest_date': '2024-01-01',
+                'trend': 'stable'
+            },
+            {
+                'name': 'Unemployment',
+                'latest_value': 3.7,
+                'latest_date': '2024-01-01',
+                'trend': 'decreasing'
+            }
+        ]
     
     try:
-        # Get economic indicators
-        indicators = {
-            'CPI': 'CPIAUCSL',
-            'Interest Rate': 'FEDFUNDS',
-            'Unemployment': 'UNRATE',
-            'GDP': 'GDP'
-        }
-        
-        data = []
-        for name, series_id in indicators.items():
-            try:
-                series = fred.get_series(series_id, limit=12)
-                if not series.empty:
-                    # Convert to list of dictionaries
-                    values = []
-                    for date, value in series.items():
-                        values.append({
-                            'date': date.strftime('%Y-%m-%d'),
-                            'value': float(value)
-                        })
-                    
-                    data.append({
-                        'name': name,
-                        'series_id': series_id,
-                        'values': values,
-                        'latest_value': float(series.iloc[-1]),
-                        'latest_date': series.index[-1].strftime('%Y-%m-%d')
-                    })
-            except Exception as e:
-                logger.error(f"Error getting {name} data: {e}")
-                continue
-        
-        return data
+        # Add real FRED API calls here when ready
+        return []
     except Exception as e:
         logger.error(f"Error getting economic data: {e}")
         return []
 
 def get_news_data():
-    """Get financial news"""
-    if not newsapi:
-        return []
-    
-    try:
-        news = newsapi.get_top_headlines(
-            category='business',
-            language='en',
-            country='us',
-            page_size=10
-        )
-        
+    """Get financial news using simple API calls"""
+    if not NEWS_API_KEY:
+        # Return mock data if no API key
         return [
             {
-                'title': article['title'],
-                'description': article['description'],
-                'url': article['url'],
-                'published_at': article['publishedAt'],
-                'source': article['source']['name']
+                'title': 'Market Update: Tech Stocks Rally',
+                'description': 'Technology stocks showed strong performance today.',
+                'url': '#',
+                'published_at': '2024-01-01T10:00:00Z',
+                'source': 'Financial News'
+            },
+            {
+                'title': 'Federal Reserve Policy Review',
+                'description': 'Latest insights on monetary policy decisions.',
+                'url': '#',
+                'published_at': '2024-01-01T09:00:00Z',
+                'source': 'Economic Times'
             }
-            for article in news.get('articles', [])
         ]
+    
+    try:
+        # Add real News API calls here when ready
+        return []
     except Exception as e:
         logger.error(f"Error getting news: {e}")
         return []
 
 def analyze_market_sentiment(news_data):
-    """Analyze market sentiment using OpenAI"""
-    if not openai or not news_data:
+    """Simple market sentiment analysis"""
+    if not news_data:
         return "Market sentiment analysis unavailable."
     
-    try:
-        # Create a summary of recent news
-        news_summary = "\n".join([
-            f"- {article['title']}" for article in news_data[:5]
-        ])
-        
-        prompt = f"""
-        Based on the following financial news, provide a brief market sentiment analysis:
-        
-        {news_summary}
-        
-        Please provide a 2-3 sentence analysis of the current market sentiment.
-        """
-        
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=150
-        )
-        
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        logger.error(f"Error analyzing sentiment: {e}")
-        return "Market sentiment analysis unavailable."
+    # Simple sentiment analysis without OpenAI dependency
+    positive_keywords = ['rally', 'gain', 'positive', 'growth', 'up']
+    negative_keywords = ['fall', 'drop', 'negative', 'decline', 'down']
+    
+    positive_count = 0
+    negative_count = 0
+    
+    for article in news_data:
+        text = (article.get('title', '') + ' ' + article.get('description', '')).lower()
+        for keyword in positive_keywords:
+            if keyword in text:
+                positive_count += 1
+        for keyword in negative_keywords:
+            if keyword in text:
+                negative_count += 1
+    
+    if positive_count > negative_count:
+        return "Market sentiment appears positive based on recent news."
+    elif negative_count > positive_count:
+        return "Market sentiment appears cautious based on recent news."
+    else:
+        return "Market sentiment appears neutral based on recent news."
 
 @app.route('/')
 def index():
@@ -274,7 +210,7 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Get some sample stock data
+    # Get sample stock data
     stocks = ['AAPL', 'GOOGL', 'MSFT', 'TSLA']
     stock_data = []
     
@@ -308,6 +244,28 @@ def stock_detail(symbol):
     
     return render_template('stock_detail.html', stock=stock_data)
 
+@app.route('/watchlist')
+@login_required
+def watchlist():
+    return render_template('watchlist.html')
+
+@app.route('/news')
+@login_required
+def news():
+    news_data = get_news_data()
+    return render_template('news.html', news=news_data)
+
+@app.route('/economic')
+@login_required
+def economic():
+    economic_data = get_economic_data()
+    return render_template('economic.html', economic_data=economic_data)
+
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
+
 @app.route('/api/stock/<symbol>')
 def api_stock_data(symbol):
     data = get_stock_data(symbol)
@@ -331,6 +289,14 @@ def api_sentiment():
     news_data = get_news_data()
     sentiment = analyze_market_sentiment(news_data)
     return jsonify({'sentiment': sentiment})
+
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "healthy",
+        "service": "iTrade",
+        "version": "production"
+    })
 
 if __name__ == '__main__':
     with app.app_context():
