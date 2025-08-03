@@ -3,82 +3,138 @@
 {% block title %}Dashboard - iTrade{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                Dashboard
-            </h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Welcome back! Here's what's happening in the markets today.
-            </p>
-        </div>
+<div class="space-y-8">
+    <!-- Welcome Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold gradient-text mb-4">
+            Welcome to iTrade
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Your comprehensive platform for real-time market analysis, AI-powered insights, and professional trading tools.
+        </p>
     </div>
 
-    <!-- Market Overview -->
-    <div class="card p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            Market Overview
-        </h2>
-        <div id="market-overview" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="text-center p-4">
-                <div class="loading"></div>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading...</p>
+    <!-- Market Overview Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="card p-6 stock-card floating">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">S&P 500</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">4,185.48</p>
+                    <p class="text-sm market-up">+0.85%</p>
+                </div>
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 stock-card floating" style="animation-delay: 0.2s;">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">NASDAQ</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">12,888.95</p>
+                    <p class="text-sm market-up">+1.23%</p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 stock-card floating" style="animation-delay: 0.4s;">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">DOW JONES</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">33,886.47</p>
+                    <p class="text-sm market-down">-0.12%</p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-r from-red-400 to-pink-500 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 stock-card floating" style="animation-delay: 0.6s;">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">VIX</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">18.45</p>
+                    <p class="text-sm market-down">-2.1%</p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-500 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <a href="/stock/AAPL" class="card p-6 hover:shadow-lg transition-shadow cursor-pointer">
+    <!-- Quick Actions Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <a href="/stock/AAPL" class="card p-6 hover:shadow-xl transition-all duration-300 cursor-pointer group">
             <div class="text-center">
-                <svg class="w-8 h-8 mx-auto text-blue-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100">
+                <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">
                     Stock Analysis
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    View detailed stock charts and analysis
+                    Advanced charts and technical analysis
                 </p>
             </div>
         </a>
 
-        <a href="/news" class="card p-6 hover:shadow-lg transition-shadow cursor-pointer">
+        <a href="/news" class="card p-6 hover:shadow-xl transition-all duration-300 cursor-pointer group">
             <div class="text-center">
-                <svg class="w-8 h-8 mx-auto text-blue-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-                </svg>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100">
+                <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">
                     Market News
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Latest financial news and analysis
+                    AI-powered news analysis
                 </p>
             </div>
         </a>
 
-        <a href="/economic" class="card p-6 hover:shadow-lg transition-shadow cursor-pointer">
+        <a href="/economic" class="card p-6 hover:shadow-xl transition-all duration-300 cursor-pointer group">
             <div class="text-center">
-                <svg class="w-8 h-8 mx-auto text-blue-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                </svg>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100">
+                <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">
                     Economic Data
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Key economic indicators and trends
+                    Key indicators and trends
                 </p>
             </div>
         </a>
 
-        <a href="/watchlist" class="card p-6 hover:shadow-lg transition-shadow cursor-pointer">
+        <a href="/watchlist" class="card p-6 hover:shadow-xl transition-all duration-300 cursor-pointer group">
             <div class="text-center">
-                <svg class="w-8 h-8 mx-auto text-blue-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100">
+                <div class="w-16 h-16 bg-gradient-to-r from-orange-400 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">
                     My Watchlist
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -88,171 +144,134 @@
         </a>
     </div>
 
-    <!-- Watchlist -->
-    <div class="card p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                My Watchlist
+    <!-- Popular Stocks Section -->
+    <div class="card p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Popular Stocks
             </h2>
-            <a href="/watchlist" class="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400">
-                View All
-            </a>
-        </div>
-        <div id="watchlist-preview">
-            <div class="text-center py-8">
-                <div class="loading mx-auto"></div>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Loading watchlist...</p>
+            <div class="flex space-x-2">
+                <button class="btn-secondary text-sm">1D</button>
+                <button class="btn-primary text-sm">1W</button>
+                <button class="btn-secondary text-sm">1M</button>
             </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for stock in stocks %}
+            <div class="card p-6 stock-card">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100">{{ stock.symbol }}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ stock.name }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-lg text-gray-900 dark:text-gray-100">${{ "%.2f"|format(stock.price) }}</p>
+                        <p class="text-sm {% if stock.change >= 0 %}market-up{% else %}market-down{% endif %}">
+                            {% if stock.change >= 0 %}+{% endif %}{{ "%.2f"|format(stock.change) }} ({{ "%.2f"|format(stock.change_percent) }}%)
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        Vol: {{ "{:,}".format(stock.volume) }}
+                    </div>
+                    <a href="/stock/{{ stock.symbol }}" class="btn-primary text-xs">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- Recent News -->
-    <div class="card p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Latest News
-            </h2>
-            <a href="/news" class="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400">
-                View All
-            </a>
+    <!-- Market Sentiment -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="card p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                Market Sentiment
+            </h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Bullish</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900 dark:text-gray-100">65%</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Neutral</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 25%"></div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900 dark:text-gray-100">25%</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-600 dark:text-gray-400">Bearish</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                            <div class="bg-red-500 h-2 rounded-full" style="width: 10%"></div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900 dark:text-gray-100">10%</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="news-preview">
-            <div class="text-center py-8">
-                <div class="loading mx-auto"></div>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">Loading news...</p>
+
+        <div class="card p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                Today's Highlights
+            </h3>
+            <div class="space-y-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Tech stocks rally on strong earnings</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Fed signals potential rate cuts</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Oil prices stabilize after OPEC+ meeting</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Retail sales exceed expectations</span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// Load market overview
-async function loadMarketOverview() {
-    try {
-        const symbols = ['^GSPC', '^DJI', '^IXIC', '^RUT']; // S&P 500, Dow Jones, NASDAQ, Russell 2000
-        const container = document.getElementById('market-overview');
-        container.innerHTML = '';
-        
-        for (const symbol of symbols) {
-            const response = await fetch(`/api/stocks/quote/${symbol}`);
-            const data = await response.json();
-            
-            if (data.price) {
-                const changeColor = data.change_percent >= 0 ? 'market-up' : 'market-down';
-                const changeIcon = data.change_percent >= 0 ? '↗' : '↘';
-                
-                const card = document.createElement('div');
-                card.className = 'p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow';
-                card.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="font-semibold text-gray-900 dark:text-gray-100">${data.name}</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">${data.symbol}</p>
-                        </div>
-                        <div class="text-${changeColor}">${changeIcon}</div>
-                    </div>
-                    <div class="mt-2">
-                        <p class="text-lg font-bold text-gray-900 dark:text-gray-100">$${data.price.toFixed(2)}</p>
-                        <p class="text-sm ${changeColor}">${data.change >= 0 ? '+' : ''}$${data.change.toFixed(2)} (${data.change_percent >= 0 ? '+' : ''}${data.change_percent.toFixed(2)}%)</p>
-                    </div>
-                `;
-                container.appendChild(card);
-            }
-        }
-    } catch (error) {
-        console.error('Error loading market overview:', error);
-    }
-}
-
-// Load watchlist preview
-async function loadWatchlistPreview() {
-    try {
-        const response = await fetch('/api/stocks/watchlist');
-        const data = await response.json();
-        const container = document.getElementById('watchlist-preview');
-        
-        if (data.watchlist && data.watchlist.length > 0) {
-            container.innerHTML = '';
-            data.watchlist.slice(0, 5).forEach(stock => {
-                const changeColor = stock.change_percent >= 0 ? 'market-up' : 'market-down';
-                const changeIcon = stock.change_percent >= 0 ? '↗' : '↘';
-                
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0';
-                item.innerHTML = `
-                    <div>
-                        <h3 class="font-semibold text-gray-900 dark:text-gray-100">${stock.symbol}</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">${stock.name}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-semibold text-gray-900 dark:text-gray-100">$${stock.price.toFixed(2)}</p>
-                        <div class="flex items-center ${changeColor}">
-                            <span class="mr-1">${changeIcon}</span>
-                            <span class="text-sm">${stock.change >= 0 ? '+' : ''}$${stock.change.toFixed(2)} (${stock.change_percent >= 0 ? '+' : ''}${stock.change_percent.toFixed(2)}%)</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        } else {
-            container.innerHTML = `
-                <div class="text-center py-8">
-                    <p class="text-gray-500 dark:text-gray-400 mb-4">Your watchlist is empty</p>
-                    <a href="/stock/AAPL" class="btn-primary inline-flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Add Stocks
-                    </a>
-                </div>
-            `;
-        }
-    } catch (error) {
-        console.error('Error loading watchlist:', error);
-    }
-}
-
-// Load news preview
-async function loadNewsPreview() {
-    try {
-        const response = await fetch('/api/news/financial');
-        const data = await response.json();
-        const container = document.getElementById('news-preview');
-        
-        if (data.articles && data.articles.length > 0) {
-            container.innerHTML = '';
-            data.articles.slice(0, 3).forEach(article => {
-                const item = document.createElement('div');
-                item.className = 'border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0 last:pb-0';
-                item.innerHTML = `
-                    <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                        <a href="${article.url}" target="_blank" class="hover:text-blue-600 dark:hover:text-blue-400">
-                            ${article.title}
-                        </a>
-                    </h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                        ${article.description || 'No description available'}
-                    </p>
-                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                        <span>${article.source.name}</span>
-                        <span>${new Date(article.publishedAt).toLocaleDateString()}</span>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        } else {
-            container.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-8">No news available</p>';
-        }
-    } catch (error) {
-        console.error('Error loading news:', error);
-    }
-}
-
-// Load all data when page loads
+// Add some interactive animations
 document.addEventListener('DOMContentLoaded', function() {
-    loadMarketOverview();
-    loadWatchlistPreview();
-    loadNewsPreview();
+    // Animate cards on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
 });
 </script>
 {% endblock %} 
