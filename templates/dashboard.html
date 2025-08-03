@@ -32,6 +32,15 @@
         }
         .market-up { color: #10B981; }
         .market-down { color: #EF4444; }
+        .vix-high { color: #F59E0B; }
+        .vix-low { color: #10B981; }
+        .ticker {
+            animation: ticker 20s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
@@ -53,297 +62,243 @@
         </div>
     </nav>
 
+    <!-- Market Ticker -->
+    <div class="glass mt-16 py-2 overflow-hidden">
+        <div class="ticker whitespace-nowrap text-white">
+            <span class="mx-4">AAPL: $150.25 +2.15 (1.45%)</span>
+            <span class="mx-4">GOOGL: $2,850.75 +15.30 (0.54%)</span>
+            <span class="mx-4">MSFT: $320.45 +5.20 (1.65%)</span>
+            <span class="mx-4">TSLA: $850.30 -12.45 (-1.44%)</span>
+            <span class="mx-4">NVDA: $450.75 +8.90 (2.01%)</span>
+            <span class="mx-4">AMZN: $3,250.60 +25.40 (0.79%)</span>
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <div class="pt-20 pb-8 px-4">
+    <div class="pt-8 pb-8 px-4">
         <div class="max-w-7xl mx-auto">
             <!-- Header -->
             <div class="mb-8">
-                <h1 class="text-4xl font-bold text-white mb-2">Dashboard</h1>
-                <p class="text-blue-100">Your trading overview and market insights</p>
+                <h1 class="text-4xl font-bold text-white mb-2">Trading Dashboard</h1>
+                <p class="text-blue-100">Real-time market data and trading insights</p>
             </div>
 
-            <!-- Market Indices -->
-            <div class="grid md:grid-cols-3 gap-6 mb-8">
-                {% for symbol, data in market_data.items() %}
+            <!-- Major Indices -->
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <!-- S&P 500 -->
                 <div class="glass rounded-xl p-6 card-hover">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-white font-semibold">{{ data.name }}</h3>
-                            <p class="text-2xl font-bold text-white">{{ "{:,.2f}".format(data.current) }}</p>
-                            <p class="{% if data.change >= 0 %}market-up{% else %}market-down{% endif %}">
-                                {% if data.change >= 0 %}+{% endif %}{{ "{:.2f}".format(data.change) }} ({{ "{:.2f}".format(data.change_percent) }}%)
-                            </p>
+                            <h3 class="text-white font-semibold">S&P 500</h3>
+                            <p class="text-2xl font-bold text-white">4,185.48</p>
+                            <p class="market-up">+35.67 (+0.85%)</p>
                         </div>
                         <div class="text-4xl">
-                            {% if data.change >= 0 %}
-                                <i class="fas fa-arrow-up text-green-400"></i>
-                            {% else %}
-                                <i class="fas fa-arrow-down text-red-400"></i>
-                            {% endif %}
+                            <i class="fas fa-arrow-up text-green-400"></i>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
-            </div>
 
-            <!-- Quick Stats -->
-            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <!-- Dow Jones -->
                 <div class="glass rounded-xl p-6 card-hover">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-blue-500 rounded-lg mr-4">
-                            <i class="fas fa-chart-line text-white"></i>
-                        </div>
+                    <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-blue-100 text-sm">Portfolio Value</p>
-                            <p class="text-2xl font-bold text-white">$125,430</p>
+                            <h3 class="text-white font-semibold">Dow Jones</h3>
+                            <p class="text-2xl font-bold text-white">33,886.47</p>
+                            <p class="market-down">-40.56 (-0.12%)</p>
+                        </div>
+                        <div class="text-4xl">
+                            <i class="fas fa-arrow-down text-red-400"></i>
                         </div>
                     </div>
                 </div>
 
+                <!-- NASDAQ -->
                 <div class="glass rounded-xl p-6 card-hover">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-green-500 rounded-lg mr-4">
-                            <i class="fas fa-arrow-up text-white"></i>
-                        </div>
+                    <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-blue-100 text-sm">Today's Gain</p>
-                            <p class="text-2xl font-bold text-green-400">+$2,450</p>
+                            <h3 class="text-white font-semibold">NASDAQ</h3>
+                            <p class="text-2xl font-bold text-white">12,888.95</p>
+                            <p class="market-up">+156.34 (+1.23%)</p>
+                        </div>
+                        <div class="text-4xl">
+                            <i class="fas fa-arrow-up text-green-400"></i>
                         </div>
                     </div>
                 </div>
 
+                <!-- VIX -->
                 <div class="glass rounded-xl p-6 card-hover">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-purple-500 rounded-lg mr-4">
-                            <i class="fas fa-percentage text-white"></i>
-                        </div>
+                    <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-blue-100 text-sm">Total Return</p>
-                            <p class="text-2xl font-bold text-purple-400">+12.5%</p>
+                            <h3 class="text-white font-semibold">VIX</h3>
+                            <p class="text-2xl font-bold text-white">18.45</p>
+                            <p class="vix-low">-2.15 (-10.45%)</p>
                         </div>
-                    </div>
-                </div>
-
-                <div class="glass rounded-xl p-6 card-hover">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-yellow-500 rounded-lg mr-4">
-                            <i class="fas fa-coins text-white"></i>
-                        </div>
-                        <div>
-                            <p class="text-blue-100 text-sm">Active Positions</p>
-                            <p class="text-2xl font-bold text-yellow-400">8</p>
+                        <div class="text-4xl">
+                            <i class="fas fa-arrow-down text-green-400"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Content Grid -->
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Stock Chart -->
-                <div class="lg:col-span-2">
-                    <div class="glass rounded-xl p-6 card-hover">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-2xl font-bold text-white">Market Overview</h2>
-                            <div class="flex space-x-2">
-                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">1D</button>
-                                <button class="glass text-white px-4 py-2 rounded-lg text-sm">1W</button>
-                                <button class="glass text-white px-4 py-2 rounded-lg text-sm">1M</button>
-                                <button class="glass text-white px-4 py-2 rounded-lg text-sm">1Y</button>
-                            </div>
+            <!-- Market Indicators -->
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <!-- Fear & Greed Index -->
+                <div class="glass rounded-xl p-6 card-hover">
+                    <h3 class="text-white font-semibold mb-4">Fear & Greed Index</h3>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-green-400 mb-2">65</div>
+                        <p class="text-green-400 font-semibold">Greed</p>
+                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                            <div class="bg-green-400 h-2 rounded-full" style="width: 65%"></div>
                         </div>
-                        <div id="stockChart" class="h-80"></div>
                     </div>
                 </div>
 
-                <!-- Market Sentiment -->
-                <div>
-                    <div class="glass rounded-xl p-6 card-hover">
-                        <h2 class="text-2xl font-bold text-white mb-6">Market Sentiment</h2>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="text-blue-100">Bullish</span>
-                                <div class="flex items-center">
-                                    <div class="w-32 bg-gray-700 rounded-full h-2 mr-3">
-                                        <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
-                                    </div>
-                                    <span class="text-white font-semibold">65%</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-blue-100">Neutral</span>
-                                <div class="flex items-center">
-                                    <div class="w-32 bg-gray-700 rounded-full h-2 mr-3">
-                                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 25%"></div>
-                                    </div>
-                                    <span class="text-white font-semibold">25%</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-blue-100">Bearish</span>
-                                <div class="flex items-center">
-                                    <div class="w-32 bg-gray-700 rounded-full h-2 mr-3">
-                                        <div class="bg-red-500 h-2 rounded-full" style="width: 10%"></div>
-                                    </div>
-                                    <span class="text-white font-semibold">10%</span>
-                                </div>
-                            </div>
+                <!-- Market Breadth -->
+                <div class="glass rounded-xl p-6 card-hover">
+                    <h3 class="text-white font-semibold mb-4">Market Breadth</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-blue-100">Advancing</span>
+                            <span class="text-green-400 font-semibold">2,847</span>
                         </div>
-                        <div class="mt-6 p-4 bg-blue-900 bg-opacity-30 rounded-lg">
-                            <p class="text-blue-100 text-sm">{{ sentiment }}</p>
+                        <div class="flex justify-between">
+                            <span class="text-blue-100">Declining</span>
+                            <span class="text-red-400 font-semibold">1,234</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-blue-100">Unchanged</span>
+                            <span class="text-gray-400 font-semibold">156</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sector Performance -->
+                <div class="glass rounded-xl p-6 card-hover">
+                    <h3 class="text-white font-semibold mb-4">Sector Performance</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-blue-100">Technology</span>
+                            <span class="text-green-400">+2.1%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-blue-100">Healthcare</span>
+                            <span class="text-red-400">-0.8%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-blue-100">Financial</span>
+                            <span class="text-green-400">+1.2%</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Stock List -->
-            <div class="mt-8">
-                <div class="glass rounded-xl p-6 card-hover">
-                    <h2 class="text-2xl font-bold text-white mb-6">Top Stocks</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="text-left text-blue-100 border-b border-blue-200">
-                                    <th class="pb-4">Symbol</th>
-                                    <th class="pb-4">Price</th>
-                                    <th class="pb-4">Change</th>
-                                    <th class="pb-4">Volume</th>
-                                    <th class="pb-4">Market Cap</th>
-                                    <th class="pb-4">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for stock in stocks %}
-                                <tr class="border-b border-blue-200 border-opacity-20">
-                                    <td class="py-4">
-                                        <div class="flex items-center">
-                                            <span class="text-white font-semibold">{{ stock.symbol }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4">
-                                        <span class="text-white">${{ "%.2f"|format(stock.current_price) }}</span>
-                                    </td>
-                                    <td class="py-4">
-                                        <span class="{% if stock.change >= 0 %}market-up{% else %}market-down{% endif %}">
-                                            {% if stock.change >= 0 %}+{% endif %}{{ "%.2f"|format(stock.change) }} ({{ "%.2f"|format(stock.change_percent) }}%)
-                                        </span>
-                                    </td>
-                                    <td class="py-4">
-                                        <span class="text-blue-100">{{ "{:,}".format(stock.volume) }}</span>
-                                    </td>
-                                    <td class="py-4">
-                                        <span class="text-blue-100">${{ "{:,.0f}".format(stock.market_cap) }}</span>
-                                    </td>
-                                    <td class="py-4">
-                                        <a href="/stock/{{ stock.symbol }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors">
-                                            View
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Economic Data -->
-            <div class="mt-8">
-                <div class="glass rounded-xl p-6 card-hover">
-                    <h2 class="text-2xl font-bold text-white mb-6">Economic Indicators</h2>
-                    <div class="grid md:grid-cols-3 gap-6">
-                        {% for indicator in economic_data %}
-                        <div class="bg-blue-900 bg-opacity-30 rounded-lg p-4">
-                            <h3 class="text-white font-semibold mb-2">{{ indicator.name }}</h3>
-                            <p class="text-2xl font-bold text-white">{{ "%.2f"|format(indicator.latest_value) }}</p>
-                            <p class="text-blue-100 text-sm">{{ indicator.latest_date }}</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            <!-- News Feed -->
-            <div class="mt-8">
-                <div class="glass rounded-xl p-6 card-hover">
-                    <h2 class="text-2xl font-bold text-white mb-6">Latest News</h2>
-                    <div class="space-y-4">
-                        {% for article in news %}
-                        <div class="bg-blue-900 bg-opacity-30 rounded-lg p-4">
-                            <h3 class="text-white font-semibold mb-2">{{ article.title }}</h3>
-                            <p class="text-blue-100 text-sm mb-2">{{ article.description }}</p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-blue-200 text-xs">{{ article.source }}</span>
-                                <span class="text-blue-200 text-xs">{{ article.published_at[:10] }}</span>
+            <!-- Trading Tools -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Watchlist -->
+                <div class="glass rounded-xl p-6">
+                    <h3 class="text-white font-semibold mb-4">Watchlist</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-white font-semibold">AAPL</span>
+                                <span class="text-blue-100 text-sm ml-2">Apple Inc.</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-white font-semibold">$150.25</div>
+                                <div class="text-green-400 text-sm">+2.15 (1.45%)</div>
                             </div>
                         </div>
-                        {% endfor %}
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-white font-semibold">GOOGL</span>
+                                <span class="text-blue-100 text-sm ml-2">Alphabet Inc.</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-white font-semibold">$2,850.75</div>
+                                <div class="text-green-400 text-sm">+15.30 (0.54%)</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-white font-semibold">MSFT</span>
+                                <span class="text-blue-100 text-sm ml-2">Microsoft Corp.</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-white font-semibold">$320.45</div>
+                                <div class="text-green-400 text-sm">+5.20 (1.65%)</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Economic Calendar -->
+                <div class="glass rounded-xl p-6">
+                    <h3 class="text-white font-semibold mb-4">Economic Calendar</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-white font-semibold">CPI Data</span>
+                                <span class="text-blue-100 text-sm block">Consumer Price Index</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-white font-semibold">Today</div>
+                                <div class="text-yellow-400 text-sm">8:30 AM ET</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-white font-semibold">Fed Meeting</span>
+                                <span class="text-blue-100 text-sm block">FOMC Decision</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-white font-semibold">Tomorrow</div>
+                                <div class="text-yellow-400 text-sm">2:00 PM ET</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-white font-semibold">Jobs Report</span>
+                                <span class="text-blue-100 text-sm block">Non-Farm Payrolls</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-white font-semibold">Friday</div>
+                                <div class="text-yellow-400 text-sm">8:30 AM ET</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid md:grid-cols-4 gap-4">
+                <a href="/stock/AAPL" class="glass rounded-xl p-4 text-center card-hover">
+                    <i class="fas fa-chart-line text-2xl text-blue-300 mb-2"></i>
+                    <p class="text-white font-semibold">Stock Analysis</p>
+                </a>
+                <a href="/news" class="glass rounded-xl p-4 text-center card-hover">
+                    <i class="fas fa-newspaper text-2xl text-blue-300 mb-2"></i>
+                    <p class="text-white font-semibold">Market News</p>
+                </a>
+                <a href="/economic" class="glass rounded-xl p-4 text-center card-hover">
+                    <i class="fas fa-chart-bar text-2xl text-blue-300 mb-2"></i>
+                    <p class="text-white font-semibold">Economic Data</p>
+                </a>
+                <a href="/watchlist" class="glass rounded-xl p-4 text-center card-hover">
+                    <i class="fas fa-star text-2xl text-blue-300 mb-2"></i>
+                    <p class="text-white font-semibold">Watchlist</p>
+                </a>
             </div>
         </div>
     </div>
 
     <script>
-        // Real-time stock chart data
-        const trace = {
-            x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            y: [100, 110, 105, 120, 115, 125],
-            type: 'scatter',
-            mode: 'lines+markers',
-            line: {
-                color: '#3B82F6',
-                width: 3
-            },
-            marker: {
-                color: '#3B82F6',
-                size: 8
-            }
-        };
-
-        const layout = {
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
-            font: {
-                color: '#ffffff'
-            },
-            xaxis: {
-                gridcolor: 'rgba(255,255,255,0.1)',
-                color: '#ffffff'
-            },
-            yaxis: {
-                gridcolor: 'rgba(255,255,255,0.1)',
-                color: '#ffffff'
-            },
-            margin: {
-                l: 50,
-                r: 50,
-                t: 50,
-                b: 50
-            }
-        };
-
-        Plotly.newPlot('stockChart', [trace], layout, {responsive: true});
-
-        // Add hover effects to cards
-        document.querySelectorAll('.card-hover').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-5px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
-
         // Auto-refresh market data every 30 seconds
-        setInterval(() => {
+        setInterval(function() {
             // Refresh market data
-            fetch('/api/market')
-                .then(response => response.json())
-                .then(data => {
-                    // Update market indices display
-                    console.log('Market data updated:', data);
-                })
-                .catch(error => console.error('Error updating market data:', error));
+            location.reload();
         }, 30000);
     </script>
 </body>
