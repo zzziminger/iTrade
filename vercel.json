@@ -13,6 +13,12 @@
     }
   ],
   "env": {
-    "FLASK_ENV": "production"
+    "FLASK_ENV": "production",
+    "FLASK_APP": "app.py"
+  },
+  "functions": {
+    "app.py": {
+      "maxDuration": 30
+    }
   }
 } 
