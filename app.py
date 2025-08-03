@@ -58,6 +58,17 @@ EMAIL_PASS = os.environ.get('EMAIL_PASS', 'your-app-password')
 # Initialize APIs
 fred = Fred(api_key=FRED_API_KEY) if FRED_API_KEY else None
 
+try:
+    newsapi = NewsApiClient(api_key=NEWS_API_KEY)
+except Exception as e:
+    logger.warning(f"News API not initialized: {e}")
+    newsapi = None
+
+try:
+    openai.api_key = OPENAI_API_KEY
+except Exception as e:
+    logger.warning(f"OpenAI API not initialized: {e}")
+
 # User model
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
