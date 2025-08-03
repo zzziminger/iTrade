@@ -18,11 +18,23 @@
   "env": {
     "FLASK_ENV": "production",
     "FLASK_APP": "index.py",
-    "PYTHONPATH": "."
+    "PYTHONPATH": ".",
+    "VERCEL_ENV": "production"
   },
   "functions": {
     "index.py": {
-      "maxDuration": 30
+      "maxDuration": 60
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
 } 
