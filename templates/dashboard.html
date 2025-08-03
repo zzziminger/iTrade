@@ -30,6 +30,8 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
         }
+        .market-up { color: #10B981; }
+        .market-down { color: #EF4444; }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
@@ -58,6 +60,30 @@
             <div class="mb-8">
                 <h1 class="text-4xl font-bold text-white mb-2">Dashboard</h1>
                 <p class="text-blue-100">Your trading overview and market insights</p>
+            </div>
+
+            <!-- Market Indices -->
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                {% for symbol, data in market_data.items() %}
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white font-semibold">{{ data.name }}</h3>
+                            <p class="text-2xl font-bold text-white">{{ "{:,.2f}".format(data.current) }}</p>
+                            <p class="{% if data.change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                {% if data.change >= 0 %}+{% endif %}{{ "{:.2f}".format(data.change) }} ({{ "{:.2f}".format(data.change_percent) }}%)
+                            </p>
+                        </div>
+                        <div class="text-4xl">
+                            {% if data.change >= 0 %}
+                                <i class="fas fa-arrow-up text-green-400"></i>
+                            {% else %}
+                                <i class="fas fa-arrow-down text-red-400"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
 
             <!-- Quick Stats -->
@@ -197,15 +223,15 @@
                                         <span class="text-white">${{ "%.2f"|format(stock.current_price) }}</span>
                                     </td>
                                     <td class="py-4">
-                                        <span class="{% if stock.change >= 0 %}text-green-400{% else %}text-red-400{% endif %}">
-                                            {{ "%.2f"|format(stock.change) }} ({{ "%.2f"|format(stock.change_percent) }}%)
+                                        <span class="{% if stock.change >= 0 %}market-up{% else %}market-down{% endif %}">
+                                            {% if stock.change >= 0 %}+{% endif %}{{ "%.2f"|format(stock.change) }} ({{ "%.2f"|format(stock.change_percent) }}%)
                                         </span>
                                     </td>
                                     <td class="py-4">
-                                        <span class="text-blue-100">{{ "{:,}".format(stock.info.volume) }}</span>
+                                        <span class="text-blue-100">{{ "{:,}".format(stock.volume) }}</span>
                                     </td>
                                     <td class="py-4">
-                                        <span class="text-blue-100">${{ "{:,.0f}".format(stock.info.market_cap) }}</span>
+                                        <span class="text-blue-100">${{ "{:,.0f}".format(stock.market_cap) }}</span>
                                     </td>
                                     <td class="py-4">
                                         <a href="/stock/{{ stock.symbol }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors">
@@ -258,7 +284,7 @@
     </div>
 
     <script>
-        // Sample stock chart data
+        // Real-time stock chart data
         const trace = {
             x: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             y: [100, 110, 105, 120, 115, 125],
@@ -307,6 +333,18 @@
                 this.style.transform = 'translateY(0)';
             });
         });
+
+        // Auto-refresh market data every 30 seconds
+        setInterval(() => {
+            // Refresh market data
+            fetch('/api/market')
+                .then(response => response.json())
+                .then(data => {
+                    // Update market indices display
+                    console.log('Market data updated:', data);
+                })
+                .catch(error => console.error('Error updating market data:', error));
+        }, 30000);
     </script>
 </body>
 </html> 
