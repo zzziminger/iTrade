@@ -14,6 +14,12 @@
   ],
   "env": {
     "FLASK_ENV": "production",
-    "FLASK_APP": "index.py"
+    "FLASK_APP": "index.py",
+    "PYTHONPATH": "."
+  },
+  "functions": {
+    "index.py": {
+      "maxDuration": 30
+    }
   }
 } 

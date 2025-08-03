@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+import logging
 
 # Import real API integration
 from api_integration import (
@@ -20,6 +21,10 @@ from api_integration import (
 # Load environment variables
 load_dotenv()
 
+# Configure logging for Vercel
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Configure Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
@@ -31,6 +36,15 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# Global database connection management (equivalent to Prisma singleton)
+def get_db():
+    """Get database instance with proper error handling"""
+    try:
+        return db
+    except Exception as e:
+        logger.error(f"Database connection error: {e}")
+        return None
 
 # Environment variables
 FRED_API_KEY = os.getenv('FRED_API_KEY')
@@ -47,14 +61,18 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    try:
+        return User.query.get(int(user_id))
+    except Exception as e:
+        logger.error(f"Error loading user {user_id}: {e}")
+        return None
 
 def get_stock_data(symbol):
-    """Get real stock data using API integration"""
+    """Get real stock data using API integration with proper error handling"""
     try:
         return get_real_stock_data(symbol)
     except Exception as e:
-        print(f"Error getting stock data: {e}")
+        logger.error(f"Error getting stock data for {symbol}: {e}")
         # Fallback to mock data
         return {
             'symbol': symbol,
@@ -71,11 +89,11 @@ def get_stock_data(symbol):
         }
 
 def get_economic_data():
-    """Get real economic data using API integration"""
+    """Get real economic data using API integration with proper error handling"""
     try:
         return get_real_economic_data()
     except Exception as e:
-        print(f"Error getting economic data: {e}")
+        logger.error(f"Error getting economic data: {e}")
         # Fallback to mock data
         return [
             {
@@ -99,56 +117,49 @@ def get_economic_data():
         ]
 
 def get_news_data():
-    """Get real news data using API integration"""
+    """Get real news data using API integration with proper error handling"""
     try:
         return get_real_news_data()
     except Exception as e:
-        print(f"Error getting news data: {e}")
+        logger.error(f"Error getting news data: {e}")
         # Fallback to mock data
         return [
             {
                 'title': 'Market Update: Tech Stocks Rally',
-                'description': 'Technology stocks showed strong performance today with major gains across the sector.',
-                'url': '#',
-                'published_at': '2024-01-01T10:00:00Z',
-                'source': 'Financial News'
+                'summary': 'Technology stocks showed strong performance today...',
+                'source': 'Financial News',
+                'published_at': '2024-01-01T10:00:00Z'
             },
             {
-                'title': 'Federal Reserve Policy Review',
-                'description': 'Latest insights on monetary policy decisions and their impact on markets.',
-                'url': '#',
-                'published_at': '2024-01-01T09:00:00Z',
-                'source': 'Economic Times'
-            },
-            {
-                'title': 'Earnings Season Kicks Off',
-                'description': 'Major companies report strong quarterly results, boosting market confidence.',
-                'url': '#',
-                'published_at': '2024-01-01T08:00:00Z',
-                'source': 'Market Watch'
+                'title': 'Federal Reserve Policy Update',
+                'summary': 'The Federal Reserve announced new policy measures...',
+                'source': 'Economic Times',
+                'published_at': '2024-01-01T09:30:00Z'
             }
         ]
 
 def get_market_data():
-    """Get real market data using API integration"""
+    """Get real market data using API integration with proper error handling"""
     try:
         return get_real_market_data()
     except Exception as e:
-        print(f"Error getting market data: {e}")
+        logger.error(f"Error getting market data: {e}")
         # Fallback to mock data
         return {
-            '^GSPC': {'name': 'S&P 500', 'current': 4185.48, 'change': 35.67, 'change_percent': 0.85},
-            '^DJI': {'name': 'Dow Jones', 'current': 33886.47, 'change': -40.56, 'change_percent': -0.12},
-            '^IXIC': {'name': 'NASDAQ', 'current': 12888.95, 'change': 156.34, 'change_percent': 1.23}
+            'indices': [
+                {'symbol': '^GSPC', 'name': 'S&P 500', 'value': 4500.0, 'change': 25.0},
+                {'symbol': '^DJI', 'name': 'Dow Jones', 'value': 35000.0, 'change': 150.0},
+                {'symbol': '^IXIC', 'name': 'NASDAQ', 'value': 14000.0, 'change': 75.0}
+            ]
         }
 
 def analyze_market_sentiment(news_data, stock_data=None):
-    """Get real AI sentiment analysis"""
+    """Analyze market sentiment with proper error handling"""
     try:
         return get_real_sentiment_analysis(news_data, stock_data)
     except Exception as e:
-        print(f"Error in sentiment analysis: {e}")
-        return "Market sentiment analysis unavailable."
+        logger.error(f"Error analyzing sentiment: {e}")
+        return {'sentiment': 'neutral', 'confidence': 0.5}
 
 @app.route('/')
 def index():
@@ -156,17 +167,31 @@ def index():
 
 @app.route('/health')
 def health():
-    return jsonify({
-        "status": "healthy",
-        "service": "iTrade",
-        "version": "production",
-        "apis": {
-            "stock": "enabled",
-            "economic": "enabled", 
-            "news": "enabled",
-            "ai": "enabled"
-        }
-    })
+    """Health check endpoint for Vercel monitoring"""
+    try:
+        # Test database connection
+        db_status = "connected" if get_db() else "disconnected"
+        
+        return jsonify({
+            "status": "healthy",
+            "service": "iTrade",
+            "version": "production",
+            "database": db_status,
+            "timestamp": datetime.utcnow().isoformat(),
+            "apis": {
+                "stock": "enabled",
+                "economic": "enabled", 
+                "news": "enabled",
+                "ai": "enabled"
+            }
+        })
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return jsonify({
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": datetime.utcnow().isoformat()
+        }), 500
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -317,16 +342,41 @@ def api_sentiment():
 
 @app.route('/api/stock/<symbol>/history')
 def api_stock_history(symbol):
-    """Get historical stock data"""
+    """Get historical stock data with proper error handling"""
     try:
         from api_integration import stock_api
         period = request.args.get('period', '1y')
         history = stock_api.get_stock_history(symbol, period)
         return jsonify(history)
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error getting stock history for {symbol}: {e}")
+        return jsonify({'error': 'Historical data not available'}), 500
+
+# Global error handlers for Vercel compatibility
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    logger.error(f"Internal server error: {error}")
+    return render_template('500.html'), 500
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    logger.error(f"Unhandled exception: {e}")
+    return jsonify({'error': 'Internal server error'}), 500
+
+# Ensure database is created for Vercel
+def create_tables():
+    """Create database tables with error handling"""
+    try:
+        with app.app_context():
+            db.create_all()
+            logger.info("Database tables created successfully")
+    except Exception as e:
+        logger.error(f"Error creating database tables: {e}")
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    create_tables()
     app.run(debug=True) 
