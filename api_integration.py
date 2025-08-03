@@ -86,19 +86,15 @@ class StockAPI:
             return []
     
     def get_market_data(self):
-        """Get major market indices and commodities"""
-        # Major indices and commodities
+        """Get major market indices and key commodities from Yahoo Finance"""
+        # Focus on the specific instruments requested
         symbols = {
-            '^GSPC': 'S&P 500',
-            '^DJI': 'Dow Jones',
             '^IXIC': 'NASDAQ',
+            '^DJI': 'Dow Jones', 
+            '^GSPC': 'S&P 500',
             '^VIX': 'VIX',
             'GC=F': 'Gold',
-            'CL=F': 'Oil (WTI)',
-            '^TNX': '10-Year Treasury',
-            'DX-Y.NYB': 'US Dollar Index',
-            'BTC-USD': 'Bitcoin',
-            'ETH-USD': 'Ethereum'
+            'CL=F': 'Oil (WTI)'
         }
         
         market_data = {}
