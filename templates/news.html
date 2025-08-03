@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}News - iTrade{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Financial News
+            </h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Stay updated with the latest market news and analysis
+            </p>
+        </div>
+    </div>
+
+    <!-- Market Sentiment -->
+    <div class="card p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Market Sentiment
+        </h2>
+        <div id="market-sentiment">
+            <div class="text-center py-4">
+                <div class="loading mx-auto"></div>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">Analyzing market sentiment...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- News Filters -->
+    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+            <select id="news-category" class="input" onchange="loadNews()">
+                <option value="business">Business</option>
+                <option value="technology">Technology</option>
+                <option value="general">General</option>
+            </select>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sentiment</label>
+            <select id="news-sentiment" class="input" onchange="filterNews()">
+                <option value="all">All News</option>
+                <option value="bullish">Bullish</option>
+                <option value="bearish">Bearish</option>
+                <option value="neutral">Neutral</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- News List -->
+    <div class="card p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Latest News
+        </h2>
+        <div id="news-container">
+            <div class="text-center py-8">
+                <div class="loading mx-auto"></div>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">Loading news...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let newsData = [];
+let sentimentData = null;
+
+// Load news
+async function loadNews() {
+    try {
+        const response = await fetch('/api/news/financial');
+        const data = await response.json();
+        newsData = data.articles || [];
+        displayNews(newsData);
+        analyzeSentiment();
+    } catch (error) {
+        console.error('Error loading news:', error);
+        document.getElementById('news-container').innerHTML = `
+            <div class="text-center py-8">
+                <p class="text-red-500 dark:text-red-400">Error loading news</p>
+            </div>
+        `;
+    }
+}
+
+// Display news
+function displayNews(articles) {
+    const container = document.getElementById('news-container');
+    
+    if (articles.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8">
+                <p class="text-gray-500 dark:text-gray-400">No news available</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = '';
+    articles.forEach(article => {
+        const item = document.createElement('div');
+        item.className = 'border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0 last:pb-0';
+        item.innerHTML = `
+            <div class="flex items-start space-x-4">
+                ${article.urlToImage ? `
+                    <img
+                        src="${article.urlToImage}"
+                        alt="${article.title}"
+                        class="w-24 h-24 object-cover rounded-lg"
+                        onerror="this.style.display='none'"
+                    >
+                ` : ''}
+                
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                        <a
+                            href="${article.url}"
+                            target="_blank"
+                            class="hover:text-blue-600 dark:hover:text-blue-400"
+                        >
+                            ${article.title}
+                        </a>
+                    </h3>
+                    
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        ${article.description || 'No description available'}
+                    </p>
+                    
+                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <div class="flex items-center space-x-4">
+                            <span>${article.source.name}</span>
+                            <span>${new Date(article.publishedAt).toLocaleDateString()}</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                            </svg>
+                            <span>Financial News</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(item);
+    });
+}
+
+// Filter news by sentiment
+function filterNews() {
+    const sentiment = document.getElementById('news-sentiment').value;
+    
+    if (sentiment === 'all') {
+        displayNews(newsData);
+        return;
+    }
+    
+    // For now, we'll just show all news since we don't have sentiment analysis for each article
+    // In a real implementation, you would filter based on sentiment analysis
+    displayNews(newsData);
+}
+
+// Analyze sentiment
+async function analyzeSentiment() {
+    try {
+        const response = await fetch('/api/news/analyze-sentiment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                articles: newsData.slice(0, 5) // Analyze first 5 articles
+            })
+        });
+        
+        const data = await response.json();
+        sentimentData = data.analysis;
+        displaySentiment(sentimentData);
+    } catch (error) {
+        console.error('Error analyzing sentiment:', error);
+        document.getElementById('market-sentiment').innerHTML = `
+            <div class="text-center py-4">
+                <p class="text-gray-500 dark:text-gray-400">Sentiment analysis not available</p>
+            </div>
+        `;
+    }
+}
+
+// Display sentiment
+function displaySentiment(analysis) {
+    if (!analysis) {
+        document.getElementById('market-sentiment').innerHTML = `
+            <div class="text-center py-4">
+                <p class="text-gray-500 dark:text-gray-400">Sentiment analysis not available</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const sentimentColor = analysis.sentiment === 'bullish' ? 'text-green-600' : 
+                          analysis.sentiment === 'bearish' ? 'text-red-600' : 'text-gray-600';
+    
+    document.getElementById('market-sentiment').innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">Overall Sentiment</h3>
+                <div class="flex items-center justify-center mt-2 ${sentimentColor}">
+                    <span class="font-semibold capitalize">${analysis.sentiment}</span>
+                </div>
+            </div>
+            
+            <div class="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">Confidence</h3>
+                <p class="text-2xl font-bold text-blue-600 mt-2">
+                    ${Math.round(analysis.confidence * 100)}%
+                </p>
+            </div>
+            
+            <div class="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">Key Themes</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                    ${analysis.key_themes ? analysis.key_themes.slice(0, 2).join(', ') : 'N/A'}
+                </p>
+            </div>
+            
+            <div class="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">Risk Factors</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                    ${analysis.risk_factors ? analysis.risk_factors.length : 0} identified
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+// Load news when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadNews();
+});
+</script>
+{% endblock %} 

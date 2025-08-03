@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}Economic Data - iTrade{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Economic Data
+            </h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Key economic indicators and trends
+            </p>
+        </div>
+    </div>
+
+    <!-- Indicator Selection -->
+    <div class="card p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Economic Indicators
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <button
+                onclick="selectIndicator('cpi')"
+                class="indicator-btn active p-4 border rounded-lg text-left transition-colors"
+            >
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">Consumer Price Index</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Inflation measure</p>
+            </button>
+            
+            <button
+                onclick="selectIndicator('interest_rate')"
+                class="indicator-btn p-4 border rounded-lg text-left transition-colors"
+            >
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">Federal Funds Rate</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Interest rates</p>
+            </button>
+            
+            <button
+                onclick="selectIndicator('bond_yield_10y')"
+                class="indicator-btn p-4 border rounded-lg text-left transition-colors"
+            >
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">10-Year Treasury Yield</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Bond yields</p>
+            </button>
+            
+            <button
+                onclick="selectIndicator('unemployment')"
+                class="indicator-btn p-4 border rounded-lg text-left transition-colors"
+            >
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">Unemployment Rate</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Employment data</p>
+            </button>
+            
+            <button
+                onclick="selectIndicator('house_price_index')"
+                class="indicator-btn p-4 border rounded-lg text-left transition-colors"
+            >
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100">Home Price Index</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Housing market</p>
+            </button>
+        </div>
+    </div>
+
+    <!-- Time Range Selection -->
+    <div class="flex space-x-2">
+        <button
+            onclick="changeTimeRange('6m')"
+            class="timeframe-btn px-4 py-2 text-sm rounded-md transition-colors"
+        >
+            6 Months
+        </button>
+        <button
+            onclick="changeTimeRange('1y')"
+            class="timeframe-btn active px-4 py-2 text-sm rounded-md transition-colors"
+        >
+            1 Year
+        </button>
+        <button
+            onclick="changeTimeRange('2y')"
+            class="timeframe-btn px-4 py-2 text-sm rounded-md transition-colors"
+        >
+            2 Years
+        </button>
+        <button
+            onclick="changeTimeRange('5y')"
+            class="timeframe-btn px-4 py-2 text-sm rounded-md transition-colors"
+        >
+            5 Years
+        </button>
+    </div>
+
+    <!-- Selected Indicator Data -->
+    <div id="indicator-data" class="card p-6">
+        <div class="text-center py-8">
+            <div class="loading mx-auto"></div>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">Loading economic data...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentIndicator = 'cpi';
+let currentTimeRange = '1y';
+let economicData = {};
+
+// Load economic data
+async function loadEconomicData() {
+    try {
+        const response = await fetch('/api/economic/indicators');
+        const data = await response.json();
+        economicData = data.indicators || {};
+        displayIndicatorData();
+    } catch (error) {
+        console.error('Error loading economic data:', error);
+        document.getElementById('indicator-data').innerHTML = `
+            <div class="text-center py-8">
+                <p class="text-red-500 dark:text-red-400">Error loading economic data</p>
+            </div>
+        `;
+    }
+}
+
+// Select indicator
+function selectIndicator(indicator) {
+    currentIndicator = indicator;
+    
+    // Update active button
+    document.querySelectorAll('.indicator-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-blue-500', 'bg-blue-50', 'dark:bg-blue-900');
+        btn.classList.add('border-gray-200', 'dark:border-gray-700');
+    });
+    event.target.classList.add('active', 'border-blue-500', 'bg-blue-50', 'dark:bg-blue-900');
+    event.target.classList.remove('border-gray-200', 'dark:border-gray-700');
+    
+    displayIndicatorData();
+}
+
+// Change time range
+function changeTimeRange(timeRange) {
+    currentTimeRange = timeRange;
+    
+    // Update active button
+    document.querySelectorAll('.timeframe-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-blue-600', 'text-white');
+        btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200', 'dark:bg-gray-700', 'dark:text-gray-300', 'dark:hover:bg-gray-600');
+    });
+    event.target.classList.add('active', 'bg-blue-600', 'text-white');
+    event.target.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200', 'dark:bg-gray-700', 'dark:text-gray-300', 'dark:hover:bg-gray-600');
+    
+    displayIndicatorData();
+}
+
+// Format value based on indicator
+function formatValue(value, indicator) {
+    if (!value) return 'N/A';
+    
+    switch (indicator) {
+        case 'cpi':
+        case 'house_price_index':
+            return value.toFixed(2);
+        case 'interest_rate':
+        case 'bond_yield_10y':
+        case 'unemployment':
+            return `${value.toFixed(2)}%`;
+        default:
+            return value.toFixed(2);
+    }
+}
+
+// Get change color
+function getChangeColor(current, previous) {
+    if (!current || !previous) return 'text-gray-500';
+    return current > previous ? 'text-green-600' : current < previous ? 'text-red-600' : 'text-gray-500';
+}
+
+// Get change icon
+function getChangeIcon(current, previous) {
+    if (!current || !previous) return '−';
+    return current > previous ? '↗' : current < previous ? '↘' : '−';
+}
+
+// Display indicator data
+function displayIndicatorData() {
+    const container = document.getElementById('indicator-data');
+    const indicator = economicData[currentIndicator];
+    
+    if (!indicator) {
+        container.innerHTML = `
+            <div class="text-center py-8">
+                <p class="text-gray-500 dark:text-gray-400">No data available for this indicator</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const indicatorNames = {
+        'cpi': 'Consumer Price Index',
+        'interest_rate': 'Federal Funds Rate',
+        'bond_yield_10y': '10-Year Treasury Yield',
+        'unemployment': 'Unemployment Rate',
+        'house_price_index': 'Home Price Index'
+    };
+    
+    container.innerHTML = `
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">
+            ${indicatorNames[currentIndicator]}
+        </h2>
+        
+        <div class="space-y-6">
+            <!-- Current Value -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Current Value</h3>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                        ${formatValue(indicator.latest_value, currentIndicator)}
+                    </p>
+                </div>
+                
+                <div class="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Previous Value</h3>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                        ${formatValue(indicator.previous_value, currentIndicator)}
+                    </p>
+                </div>
+                
+                <div class="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Change</h3>
+                    <div class="flex items-center justify-center mt-1 ${getChangeColor(indicator.latest_value, indicator.previous_value)}">
+                        <span class="text-lg font-bold ml-1">
+                            ${indicator.latest_value && indicator.previous_value ? 
+                                formatValue(indicator.latest_value - indicator.previous_value, currentIndicator) : 'N/A'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div id="economic-chart" class="h-64">
+                <div class="flex items-center justify-center h-full">
+                    <div class="loading"></div>
+                    <span class="ml-2 text-gray-500 dark:text-gray-400">Loading chart...</span>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-800">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Value</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Change</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                        ${indicator.data ? indicator.data.slice(0, 10).map((item, index) => `
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    ${new Date(item.date).toLocaleDateString()}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                    ${formatValue(item.value, currentIndicator)}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    ${index < indicator.data.length - 1 ? `
+                                        <div class="flex items-center ${getChangeColor(item.value, indicator.data[index + 1].value)}">
+                                            <span class="mr-1">${getChangeIcon(item.value, indicator.data[index + 1].value)}</span>
+                                            <span>${formatValue(item.value - indicator.data[index + 1].value, currentIndicator)}</span>
+                                        </div>
+                                    ` : '<span class="text-gray-400">-</span>'}
+                                </td>
+                            </tr>
+                        `).join('') : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    
+    // Create chart
+    if (indicator.data && indicator.data.length > 0) {
+        createEconomicChart(indicator.data);
+    }
+}
+
+// Create economic chart
+function createEconomicChart(data) {
+    const chartData = data.map(item => ({
+        x: new Date(item.date),
+        y: item.value
+    }));
+    
+    const trace = {
+        x: chartData.map(d => d.x),
+        y: chartData.map(d => d.y),
+        type: 'scatter',
+        mode: 'lines',
+        line: {
+            color: '#0ea5e9',
+            width: 2
+        },
+        fill: 'tonexty',
+        fillcolor: 'rgba(14, 165, 233, 0.1)'
+    };
+    
+    const layout = {
+        title: `${currentIndicator.toUpperCase()} Over Time`,
+        xaxis: {
+            title: 'Date',
+            showgrid: true,
+            gridcolor: '#e5e7eb'
+        },
+        yaxis: {
+            title: 'Value',
+            showgrid: true,
+            gridcolor: '#e5e7eb'
+        },
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        font: {
+            color: document.documentElement.classList.contains('dark') ? '#f9fafb' : '#111827'
+        }
+    };
+    
+    Plotly.newPlot('economic-chart', [trace], layout, {responsive: true});
+}
+
+// Load data when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadEconomicData();
+});
+</script>
+
+<style>
+.indicator-btn {
+    transition: all 0.2s;
+}
+.indicator-btn.active {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+.dark .indicator-btn.active {
+    background-color: #1e3a8a;
+}
+
+.timeframe-btn {
+    transition: all 0.2s;
+}
+.timeframe-btn.active {
+    background-color: #2563eb;
+    color: white;
+}
+</style>
+{% endblock %} 
